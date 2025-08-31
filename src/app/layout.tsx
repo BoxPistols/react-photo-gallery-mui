@@ -1,7 +1,8 @@
+import { CssBaseline, ThemeProvider } from '@mui/material'
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter'
-import { CssBaseline, ThemeProvider } from '@mui/material'
+
 import { QueryProvider } from '@/lib/query-provider'
 import { theme } from '@/lib/theme'
 import './globals.css'
@@ -10,7 +11,8 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'React PhotoSwipe Gallery MUI',
-  description: 'Modern photo gallery with MUI ImageList and PhotoSwipe integration',
+  description:
+    'Modern photo gallery with MUI ImageList and PhotoSwipe integration',
 }
 
 export default function RootLayout({
@@ -24,9 +26,7 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <QueryProvider>
-              {children}
-            </QueryProvider>
+            <QueryProvider>{children}</QueryProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>

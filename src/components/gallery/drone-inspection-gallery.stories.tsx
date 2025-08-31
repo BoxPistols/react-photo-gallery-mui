@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+
 import { DroneInspectionGallery } from './drone-inspection-gallery'
 
 const meta: Meta<typeof DroneInspectionGallery> = {
@@ -8,7 +9,8 @@ const meta: Meta<typeof DroneInspectionGallery> = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'Drone inspection gallery with MUI ImageList and PhotoSwipe integration',
+        component:
+          'Drone inspection gallery with MUI ImageList and PhotoSwipe integration',
       },
     },
   },
@@ -32,7 +34,8 @@ export const WithInteractions: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Gallery with interaction examples - click on thumbnails to open detail modal',
+        story:
+          'Gallery with interaction examples - click on thumbnails to open detail modal',
       },
     },
   },

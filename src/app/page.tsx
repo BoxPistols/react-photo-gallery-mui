@@ -1,10 +1,13 @@
 'use client'
 
-import dynamic from 'next/dynamic'
 import { Container, Typography, Box } from '@mui/material'
+import dynamic from 'next/dynamic'
 
 const DroneInspectionGallery = dynamic(
-  () => import('@/components/gallery/drone-inspection-gallery').then((mod) => ({ default: mod.DroneInspectionGallery })),
+  () =>
+    import('@/components/gallery/drone-inspection-gallery').then((mod) => ({
+      default: mod.DroneInspectionGallery,
+    })),
   { ssr: false }
 )
 
@@ -19,7 +22,7 @@ export default function Home() {
           MUI ImageList + PhotoSwipe v5 Integration
         </Typography>
       </Box>
-      
+
       <DroneInspectionGallery />
     </Container>
   )

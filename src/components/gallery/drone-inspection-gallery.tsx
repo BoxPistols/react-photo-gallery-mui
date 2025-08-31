@@ -1,6 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
+import {
+  Close as CloseIcon,
+  LocationOn as LocationIcon,
+  CalendarToday as CalendarIcon,
+  NavigateBefore as NavigateBeforeIcon,
+  NavigateNext as NavigateNextIcon,
+} from '@mui/icons-material'
 import {
   Typography,
   Box,
@@ -14,14 +20,10 @@ import {
   useTheme,
   useMediaQuery,
 } from '@mui/material'
-import {
-  Close as CloseIcon,
-  LocationOn as LocationIcon,
-  CalendarToday as CalendarIcon,
-  NavigateBefore as NavigateBeforeIcon,
-  NavigateNext as NavigateNextIcon,
-} from '@mui/icons-material'
+import React, { useState } from 'react'
+
 import type { GalleryItem } from '@/types/gallery'
+
 import { ImageZoom } from './image-zoom'
 
 // サンプルデータ
@@ -30,7 +32,8 @@ const sampleItems: GalleryItem[] = [
     id: '1',
     type: 'image',
     url: 'https://images.unsplash.com/photo-1570298995084-9c18ffa7b2c3?w=800&q=80',
-    thumbnail: 'https://images.unsplash.com/photo-1570298995084-9c18ffa7b2c3?w=300&h=200&fit=crop&q=80',
+    thumbnail:
+      'https://images.unsplash.com/photo-1570298995084-9c18ffa7b2c3?w=300&h=200&fit=crop&q=80',
     title: '太陽光パネル点検_01',
     width: 800,
     height: 600,
@@ -55,7 +58,8 @@ const sampleItems: GalleryItem[] = [
     id: '2',
     type: 'image',
     url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=800&q=80',
-    thumbnail: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=300&h=200&fit=crop&q=80',
+    thumbnail:
+      'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=300&h=200&fit=crop&q=80',
     title: '橋梁点検_05',
     width: 800,
     height: 600,
@@ -80,7 +84,8 @@ const sampleItems: GalleryItem[] = [
     id: '3',
     type: 'image',
     url: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=800&q=80',
-    thumbnail: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=300&h=200&fit=crop&q=80',
+    thumbnail:
+      'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=300&h=200&fit=crop&q=80',
     title: '鉄塔点検_12',
     width: 800,
     height: 600,
@@ -157,16 +162,18 @@ export function DroneInspectionGallery() {
 
   return (
     <>
-      <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
+      <Typography
+        variant="h4"
+        component="h1"
+        gutterBottom
+        align="center"
+        sx={{ mb: 4 }}
+      >
         ドローン点検 撮影ログギャラリー
       </Typography>
 
       {/* サムネイル一覧 */}
-      <ImageList
-        variant="masonry"
-        cols={isMobile ? 2 : 3}
-        gap={12}
-      >
+      <ImageList variant="masonry" cols={isMobile ? 2 : 3} gap={12}>
         {sampleItems.map((item, index) => (
           <ImageListItem
             key={item.id}
@@ -194,7 +201,11 @@ export function DroneInspectionGallery() {
             />
             <ImageListItemBar
               title={item.title}
-              subtitle={item.metadata ? new Date(item.metadata.captureDate).toLocaleDateString() : ''}
+              subtitle={
+                item.metadata
+                  ? new Date(item.metadata.captureDate).toLocaleDateString()
+                  : ''
+              }
               sx={{
                 borderBottomLeftRadius: 8,
                 borderBottomRightRadius: 8,
@@ -227,7 +238,14 @@ export function DroneInspectionGallery() {
         {selectedItem && (
           <>
             {/* ヘッダー部分 */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                p: 2,
+              }}
+            >
               <Typography variant="h6">{selectedItem.title}</Typography>
               <Box>
                 <IconButton onClick={handleClose} sx={{ color: 'white' }}>
@@ -239,7 +257,15 @@ export function DroneInspectionGallery() {
             <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
 
             {/* メディア表示部分 */}
-            <Box sx={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2 }}>
+            <Box
+              sx={{
+                position: 'relative',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                p: 2,
+              }}
+            >
               {/* 前へナビゲーション */}
               <IconButton
                 onClick={() => navigateTo('prev')}
@@ -286,30 +312,43 @@ export function DroneInspectionGallery() {
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
                   <Chip
                     icon={<CalendarIcon />}
-                    label={new Date(selectedItem.metadata.captureDate).toLocaleString()}
+                    label={new Date(
+                      selectedItem.metadata.captureDate
+                    ).toLocaleString()}
                     size="small"
                     variant="outlined"
-                    sx={{ color: 'white', borderColor: 'rgba(255, 255, 255, 0.3)' }}
+                    sx={{
+                      color: 'white',
+                      borderColor: 'rgba(255, 255, 255, 0.3)',
+                    }}
                   />
                   <Chip
                     icon={<LocationIcon />}
                     label={selectedItem.metadata.location.name}
                     size="small"
                     variant="outlined"
-                    sx={{ color: 'white', borderColor: 'rgba(255, 255, 255, 0.3)' }}
+                    sx={{
+                      color: 'white',
+                      borderColor: 'rgba(255, 255, 255, 0.3)',
+                    }}
                   />
                   <Chip
                     label={selectedItem.metadata.resolution}
                     size="small"
                     variant="outlined"
-                    sx={{ color: 'white', borderColor: 'rgba(255, 255, 255, 0.3)' }}
+                    sx={{
+                      color: 'white',
+                      borderColor: 'rgba(255, 255, 255, 0.3)',
+                    }}
                   />
                   <Chip
                     label={getStatusLabel(selectedItem.metadata.status)}
                     size="small"
-                    sx={{ 
-                      backgroundColor: getStatusColor(selectedItem.metadata.status),
-                      color: 'white' 
+                    sx={{
+                      backgroundColor: getStatusColor(
+                        selectedItem.metadata.status
+                      ),
+                      color: 'white',
                     }}
                   />
                 </Box>
@@ -318,35 +357,53 @@ export function DroneInspectionGallery() {
                   位置情報
                 </Typography>
                 <Typography variant="body2" sx={{ mb: 2 }}>
-                  {selectedItem.metadata.location.name} (緯度: {selectedItem.metadata.location.lat}, 経度: {selectedItem.metadata.location.lng})
+                  {selectedItem.metadata.location.name} (緯度:{' '}
+                  {selectedItem.metadata.location.lat}, 経度:{' '}
+                  {selectedItem.metadata.location.lng})
                 </Typography>
 
-                <Box sx={{ height: 200, backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2 }}>
+                <Box
+                  sx={{
+                    height: 200,
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    borderRadius: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    mb: 2,
+                  }}
+                >
                   <Box sx={{ textAlign: 'center' }}>
-                    <LocationIcon sx={{ fontSize: 40, color: 'rgba(255, 255, 255, 0.5)' }} />
-                    <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                    <LocationIcon
+                      sx={{ fontSize: 40, color: 'rgba(255, 255, 255, 0.5)' }}
+                    />
+                    <Typography
+                      variant="body2"
+                      sx={{ color: 'rgba(255, 255, 255, 0.7)' }}
+                    >
                       地図表示エリア
                     </Typography>
                   </Box>
                 </Box>
 
-                {selectedItem.metadata.tags && selectedItem.metadata.tags.length > 0 && (
-                  <>
-                    <Typography variant="subtitle2" gutterBottom>
-                      タグ
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                      {selectedItem.metadata.tags.map((tag) => (
-                        <Chip
-                          key={tag.id}
-                          label={tag.label}
-                          size="small"
-                          sx={{ backgroundColor: tag.color, color: 'white' }}
-                        />
-                      ))}
-                    </Box>
-                  </>
-                )}
+                {selectedItem.metadata.tags &&
+                  selectedItem.metadata.tags.length > 0 && (
+                    <>
+                      <Typography variant="subtitle2" gutterBottom>
+                        タグ
+                      </Typography>
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {selectedItem.metadata.tags.map((tag) => (
+                          <Chip
+                            key={tag.id}
+                            label={tag.label}
+                            size="small"
+                            sx={{ backgroundColor: tag.color, color: 'white' }}
+                          />
+                        ))}
+                      </Box>
+                    </>
+                  )}
               </Box>
             )}
           </>
@@ -355,3 +412,4 @@ export function DroneInspectionGallery() {
     </>
   )
 }
+export default { DroneInspectionGallery }
