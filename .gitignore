@@ -18,4 +18,7 @@ bun.lockb
 
 storybook-static
 # Storybook debug logs
-debug-storybook.log 
+debug-storybook.log
+
+# TypeScript incremental compilation
+*.tsbuildinfo 

@@ -1,12 +1,12 @@
 'use client'
 
-import React, { useState, useRef, useCallback } from 'react'
-import { Box, IconButton } from '@mui/material'
 import {
   ZoomIn as ZoomInIcon,
   ZoomOut as ZoomOutIcon,
   CenterFocusStrong as ResetIcon,
 } from '@mui/icons-material'
+import { Box, IconButton } from '@mui/material'
+import React, { useState, useRef, useCallback } from 'react'
 
 interface ImageZoomProps {
   src: string
@@ -31,34 +31,37 @@ export const ImageZoom: React.FC<ImageZoomProps> = ({
   const containerRef = useRef<HTMLDivElement>(null)
 
   // ズームイン（クリック位置を中心に）
-  const handleZoomIn = useCallback((event?: React.MouseEvent) => {
-    if (scale >= maxZoom) return
+  const handleZoomIn = useCallback(
+    (event?: React.MouseEvent) => {
+      if (scale >= maxZoom) return
 
-    const newScale = Math.min(scale + zoomStep, maxZoom)
-    
-    if (event && imageRef.current && containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect()
-      const clickX = event.clientX - rect.left
-      const clickY = event.clientY - rect.top
-      
-      // クリック位置を基準にズーム位置を調整
-      const centerX = rect.width / 2
-      const centerY = rect.height / 2
-      
-      const newX = position.x - (clickX - centerX) * (newScale / scale - 1)
-      const newY = position.y - (clickY - centerY) * (newScale / scale - 1)
-      
-      setPosition({ x: newX, y: newY })
-    }
-    
-    setScale(newScale)
-  }, [scale, maxZoom, zoomStep, position])
+      const newScale = Math.min(scale + zoomStep, maxZoom)
+
+      if (event && imageRef.current && containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect()
+        const clickX = event.clientX - rect.left
+        const clickY = event.clientY - rect.top
+
+        // クリック位置を基準にズーム位置を調整
+        const centerX = rect.width / 2
+        const centerY = rect.height / 2
+
+        const newX = position.x - (clickX - centerX) * (newScale / scale - 1)
+        const newY = position.y - (clickY - centerY) * (newScale / scale - 1)
+
+        setPosition({ x: newX, y: newY })
+      }
+
+      setScale(newScale)
+    },
+    [scale, maxZoom, zoomStep, position]
+  )
 
   // ズームアウト
   const handleZoomOut = useCallback(() => {
     const newScale = Math.max(scale - zoomStep, minZoom)
     setScale(newScale)
-    
+
     // 最小ズームに戻った時は位置もリセット
     if (newScale === minZoom) {
       setPosition({ x: 0, y: 0 })
@@ -72,28 +75,34 @@ export const ImageZoom: React.FC<ImageZoomProps> = ({
   }, [minZoom])
 
   // ドラッグ開始
-  const handleMouseDown = useCallback((event: React.MouseEvent) => {
-    if (scale <= minZoom) return
-    
-    setIsDragging(true)
-    setLastMousePosition({ x: event.clientX, y: event.clientY })
-    event.preventDefault()
-  }, [scale, minZoom])
+  const handleMouseDown = useCallback(
+    (event: React.MouseEvent) => {
+      if (scale <= minZoom) return
+
+      setIsDragging(true)
+      setLastMousePosition({ x: event.clientX, y: event.clientY })
+      event.preventDefault()
+    },
+    [scale, minZoom]
+  )
 
   // ドラッグ中
-  const handleMouseMove = useCallback((event: React.MouseEvent) => {
-    if (!isDragging) return
+  const handleMouseMove = useCallback(
+    (event: React.MouseEvent) => {
+      if (!isDragging) return
 
-    const deltaX = event.clientX - lastMousePosition.x
-    const deltaY = event.clientY - lastMousePosition.y
+      const deltaX = event.clientX - lastMousePosition.x
+      const deltaY = event.clientY - lastMousePosition.y
 
-    setPosition(prev => ({
-      x: prev.x + deltaX,
-      y: prev.y + deltaY,
-    }))
+      setPosition((prev) => ({
+        x: prev.x + deltaX,
+        y: prev.y + deltaY,
+      }))
 
-    setLastMousePosition({ x: event.clientX, y: event.clientY })
-  }, [isDragging, lastMousePosition])
+      setLastMousePosition({ x: event.clientX, y: event.clientY })
+    },
+    [isDragging, lastMousePosition]
+  )
 
   // ドラッグ終了
   const handleMouseUp = useCallback(() => {
@@ -101,29 +110,32 @@ export const ImageZoom: React.FC<ImageZoomProps> = ({
   }, [])
 
   // ホイールズーム
-  const handleWheel = useCallback((event: React.WheelEvent) => {
-    event.preventDefault()
-    
-    const delta = event.deltaY > 0 ? -zoomStep : zoomStep
-    const newScale = Math.max(minZoom, Math.min(maxZoom, scale + delta))
-    
-    if (newScale !== scale) {
-      const rect = containerRef.current?.getBoundingClientRect()
-      if (rect) {
-        const mouseX = event.clientX - rect.left
-        const mouseY = event.clientY - rect.top
-        const centerX = rect.width / 2
-        const centerY = rect.height / 2
-        
-        const newX = position.x - (mouseX - centerX) * (newScale / scale - 1)
-        const newY = position.y - (mouseY - centerY) * (newScale / scale - 1)
-        
-        setPosition({ x: newX, y: newY })
+  const handleWheel = useCallback(
+    (event: React.WheelEvent) => {
+      event.preventDefault()
+
+      const delta = event.deltaY > 0 ? -zoomStep : zoomStep
+      const newScale = Math.max(minZoom, Math.min(maxZoom, scale + delta))
+
+      if (newScale !== scale) {
+        const rect = containerRef.current?.getBoundingClientRect()
+        if (rect) {
+          const mouseX = event.clientX - rect.left
+          const mouseY = event.clientY - rect.top
+          const centerX = rect.width / 2
+          const centerY = rect.height / 2
+
+          const newX = position.x - (mouseX - centerX) * (newScale / scale - 1)
+          const newY = position.y - (mouseY - centerY) * (newScale / scale - 1)
+
+          setPosition({ x: newX, y: newY })
+        }
+
+        setScale(newScale)
       }
-      
-      setScale(newScale)
-    }
-  }, [scale, minZoom, maxZoom, zoomStep, position])
+    },
+    [scale, minZoom, maxZoom, zoomStep, position]
+  )
 
   return (
     <Box
@@ -137,7 +149,11 @@ export const ImageZoom: React.FC<ImageZoomProps> = ({
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.1)',
         borderRadius: 1,
-        cursor: isDragging ? 'grabbing' : scale > minZoom ? 'grab' : 'zoom-in',
+        cursor: (() => {
+          if (isDragging) return 'grabbing'
+          if (scale > minZoom) return 'grab'
+          return 'zoom-in'
+        })(),
       }}
       ref={containerRef}
       onMouseDown={handleMouseDown}
@@ -147,6 +163,7 @@ export const ImageZoom: React.FC<ImageZoomProps> = ({
       onWheel={handleWheel}
       onClick={scale === minZoom ? handleZoomIn : undefined}
     >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         ref={imageRef}
         src={src}
@@ -161,7 +178,7 @@ export const ImageZoom: React.FC<ImageZoomProps> = ({
           pointerEvents: 'none',
         }}
       />
-      
+
       {/* コントロールボタン */}
       <Box
         sx={{
@@ -203,7 +220,7 @@ export const ImageZoom: React.FC<ImageZoomProps> = ({
           <ResetIcon />
         </IconButton>
       </Box>
-      
+
       {/* ズーム倍率表示 */}
       {scale > minZoom && (
         <Box
@@ -224,3 +241,5 @@ export const ImageZoom: React.FC<ImageZoomProps> = ({
     </Box>
   )
 }
+
+export default ImageZoom

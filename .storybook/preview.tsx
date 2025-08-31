@@ -1,7 +1,8 @@
-import type { Preview } from '@storybook/react'
-import React from 'react'
 import { CssBaseline, ThemeProvider } from '@mui/material'
+import type { Preview } from '@storybook/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import React from 'react'
+
 import { theme } from '../src/lib/theme'
 import '../src/app/globals.css'
 
