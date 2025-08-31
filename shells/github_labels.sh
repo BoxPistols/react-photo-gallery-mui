@@ -364,8 +364,8 @@ create_labels() {
           echo "$existing_label_info" | decode_base64 | jq -r "${1}"
         }
 
-                 local existing_color=$(_existing_jq '.color')
-         local existing_description=$(_existing_jq '.description')
+        local existing_color=$(_existing_jq '.color')
+        local existing_description=$(_existing_jq '.description')
 
                   # null値を空文字列に正規化
          if [ "$existing_description" = "null" ]; then
