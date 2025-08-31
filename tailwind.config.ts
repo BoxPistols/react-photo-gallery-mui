@@ -14,7 +14,7 @@ const config: Config = {
         foreground: 'var(--foreground)',
       },
       zIndex: {
-        'photoswipe': '9999',
+        photoswipe: '9999',
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-in-out',
