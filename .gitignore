@@ -16,4 +16,6 @@ bun.lockb
 
 .history
 
-.storybook-static
+storybook-static
+# Storybook debug logs
+debug-storybook.log 
