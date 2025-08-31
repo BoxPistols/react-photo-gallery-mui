@@ -1,95 +1,158 @@
 # GEMINI.md
 
-## Project Overview
+## プロジェクト概要
 
-This project is a React-based web application that showcases a modern photo gallery with a lightbox feature. It is built with Next.js, TypeScript, and Material-UI (MUI), and uses PhotoSwipe for the gallery's lightbox functionality. The application is styled with Tailwind CSS and includes a custom image zoom component. The gallery is designed to display images from drone inspections, complete with metadata such as capture date, location, and tags.
+このプロジェクトは、モダンなフォトギャラリーとライトボックス機能を備えたReactベースのWebアプリケーションです。Next.js 15、TypeScript 5.7、Material-UI (MUI) 7.3を使用して構築されており、PhotoSwipe 5.4を使用してギャラリーのライトボックス機能を実現しています。アプリケーションはTailwind CSS 4.1でスタイリングされ、カスタム画像ズームコンポーネントも含まれています。ギャラリーは、撮影日、場所、タグなどのメタデータと共にドローン検査の画像を表示するように設計されています。
 
-The project is well-structured, with a clear separation of concerns between pages, components, and utilities. It also includes a comprehensive set of development tools, including Storybook for component development, Vitest for testing, and ESLint and Prettier for code quality.
+プロジェクトは適切に構造化されており、ページ、コンポーネント、ユーティリティ間の関心の分離が明確です。また、Storybook 9.1によるコンポーネント開発、Vitest 3.2によるテスト、ESLint 9.17とPrettier 3.6によるコード品質向上のための包括的な開発ツールセットも含まれています。
 
-## Building and Running
+## ビルドと実行
 
-The project uses `pnpm` as its package manager.
+このプロジェクトは`pnpm`をパッケージマネージャーとして使用しています。
 
-### Development
+### 開発
 
-To start the development server, run:
+開発サーバーを開始するには、以下を実行してください：
 
 ```bash
 pnpm dev
 ```
 
-This will start the Next.js development server on `http://localhost:3000`.
+これにより、Next.js開発サーバーが`http://localhost:3000`で開始されます。
 
-### Building
+### ビルド
 
-This project has two build commands:
+このプロジェクトには2つのビルドコマンドがあります：
 
-- `pnpm build`: This command builds the Next.js application for production. The output is stored in the `.next` directory.
-- `pnpm build:package`: This command uses `tsup` to bundle the project as a package, likely for distribution on npm. The output is stored in the `dist` directory.
+- `pnpm build`: このコマンドはNext.jsアプリケーションを本番用にビルドします。出力は`.next`ディレクトリに保存されます。
+- `pnpm build-storybook`: このコマンドはStorybookをビルドして静的ファイルを生成します。出力は`storybook-static`ディレクトリに保存されます。
 
-To create a production build of the application, run:
+アプリケーションの本番ビルドを作成するには、以下を実行してください：
 
 ```bash
 pnpm build
 ```
 
-To build the package for distribution, run:
+Storybookをビルドするには、以下を実行してください：
 
 ```bash
-pnpm build:package
+pnpm build-storybook
 ```
 
-### Running
+### 実行
 
-To start the production server, run:
+本番サーバーを開始するには、以下を実行してください：
 
 ```bash
 pnpm start
 ```
 
-This will start the Next.js production server.
+これにより、Next.js本番サーバーが開始されます。
 
-### Testing
+### テスト
 
-To run the unit tests, run:
+ユニットテストを実行するには、以下を実行してください：
 
 ```bash
 pnpm test
 ```
 
-This will run the tests using Vitest.
+これにより、Vitestを使用してテストが実行されます。
+
+UI付きでテストを実行するには：
+
+```bash
+pnpm test:ui
+```
+
+カバレッジレポート付きでテストを実行するには：
+
+```bash
+pnpm test:coverage
+```
 
 ### Storybook
 
-To start the Storybook development server, run:
+Storybook開発サーバーを開始するには、以下を実行してください：
 
 ```bash
 pnpm storybook
 ```
 
-This will start the Storybook server on `http://localhost:6006`.
+これにより、Storybookサーバーが`http://localhost:6006`で開始されます。
 
-## Development Conventions
+## 開発規約
 
-### Package Manager
+### パッケージマネージャー
 
-This project uses `pnpm` for package management. Please use `pnpm` to install, add, or remove dependencies.
+このプロジェクトは`pnpm`をパッケージ管理に使用しています。依存関係のインストール、追加、削除には`pnpm`を使用してください。
 
-### Code Style
+### コードスタイル
 
-The project uses ESLint and Prettier to enforce a consistent code style. There are pre-commit hooks set up with Husky that will automatically lint and format your code before you commit.
+このプロジェクトは、ESLintとPrettierを使用して一貫したコードスタイルを強制しています。Huskyを使用したpre-commitフックが設定されており、コミット前にコードが自動的にリントとフォーマットされます。
 
-You can also manually run the following commands:
+以下のコマンドも手動で実行できます：
 
-- `pnpm lint`: Check for linting errors.
-- `pnpm format`: Format the code with Prettier.
-- `pnpm fix`: Automatically fix linting and formatting issues.
-- `pnpm check`: Run all checks (type-checking, linting, and formatting).
+- `pnpm lint`: リンティングエラーをチェックします。
+- `pnpm lint:fix`: リンティングエラーを自動修正します。
+- `pnpm format`: Prettierでコードをフォーマットします。
+- `pnpm fix`: リンティングとフォーマットの問題を自動修正します。
+- `pnpm check`: すべてのチェック（型チェック、リンティング、フォーマット）を実行します。
+- `pnpm type-check`: TypeScriptの型チェックのみを実行します。
 
-### Component Development
+### コンポーネント開発
 
-Components are developed in isolation using Storybook. You can create stories for your components in the `src/components` directory.
+コンポーネントは、Storybookを使用して分離された環境で開発されます。`src/components`ディレクトリでコンポーネントのストーリーを作成できます。
 
-### Styling
+### スタイリング
 
-The project uses a combination of Material-UI (MUI) and Tailwind CSS for styling. To avoid conflicts between the two, the `important: true` option is enabled in the Tailwind CSS configuration. When styling components, it is recommended to use Tailwind CSS utility classes whenever possible.
+このプロジェクトは、Material-UI (MUI)とTailwind CSSの組み合わせを使用してスタイリングを行っています。2つの間の競合を避けるため、Tailwind CSS設定で`important: true`オプションが有効になっています。コンポーネントのスタイリング時は、可能な限りTailwind CSSユーティリティクラスの使用が推奨されます。
+
+### TypeScript設定
+
+プロジェクトは厳格なTypeScript設定を使用しており、以下の特徴があります：
+
+- `strict: true`が有効
+- ES2022ターゲット
+- パスエイリアス（`@/*`、`@/components/*`など）が設定済み
+- 型安全性を重視したESLintルールが設定済み
+
+### テスト環境
+
+- **Vitest**: 高速なテストランナー
+- **Testing Library**: Reactコンポーネントのテスト
+- **jsdom**: ブラウザ環境のシミュレーション
+- **カバレッジレポート**: V8カバレッジツールを使用
+
+### 開発ツール
+
+- **ESLint**: コード品質とスタイルの強制
+- **Prettier**: コードフォーマット
+- **Husky**: Gitフックの管理
+- **lint-staged**: ステージされたファイルのみのリンティング
+- **Storybook**: コンポーネント開発とドキュメント
+
+## 技術スタック
+
+### フロントエンド
+
+- **React 19.1**: 最新のReactバージョン
+- **Next.js 15.5**: App Router対応の最新バージョン
+- **TypeScript 5.7**: 厳格な型システム
+
+### UIライブラリ
+
+- **Material-UI 7.3**: 最新のMUIバージョン
+- **Tailwind CSS 4.1**: 最新のTailwind CSS
+- **PhotoSwipe 5.4**: 高性能なライトボックスライブラリ
+
+### 状態管理
+
+- **Zustand 5.0**: 軽量な状態管理
+- **React Query 5.6**: サーバー状態管理
+
+### 開発環境
+
+- **Node.js**: 20.0.0以上が必要
+- **pnpm**: 9.12.3を使用
+- **Vite**: 7.1.3（Storybook用）
