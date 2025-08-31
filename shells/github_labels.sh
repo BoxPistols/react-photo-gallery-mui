@@ -644,10 +644,9 @@ show_menu() {
       if [ -f "$DEFAULT_LABELS_FILE" ]; then
         echo "デフォルトファイル ($DEFAULT_LABELS_FILE) からラベルを作成します"
         echo "エンターキーを押すとデフォルトファイルを使用します"
-        read -r -p "別のファイルを使用しますか？ (Y/n): " use_custom
-        if [[ "$use_custom" =~ ^[Nn]$ ]]; then
+        read -r -p "別のファイルを使用しますか？ (y/N): " use_custom
+        if [[ "$use_custom" =~ ^[Yy]$ ]]; then
           read -r -p "JSONファイル名: " filename
-          filename=${filename:-$DEFAULT_LABELS_FILE}
         else
           filename="$DEFAULT_LABELS_FILE"
         fi
