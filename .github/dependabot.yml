@@ -1,0 +1,59 @@
+version: 2
+updates:
+  # npm dependencies
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+    open-pull-requests-limit: 5
+    reviewers:
+      - 'your-github-username' # 実際のGitHubユーザー名に変更
+    assignees:
+      - 'your-github-username' # 実際のGitHubユーザー名に変更
+    commit-message:
+      prefix: 'chore(deps)'
+      include: 'scope'
+    groups:
+      storybook-dependencies:
+        patterns:
+          - '@storybook/*'
+          - 'storybook'
+        update-types:
+          - 'minor'
+          - 'patch'
+      testing-dependencies:
+        patterns:
+          - '@testing-library/*'
+          - '@vitest/*'
+          - 'vitest'
+          - 'jsdom'
+        update-types:
+          - 'minor'
+          - 'patch'
+      eslint-dependencies:
+        patterns:
+          - 'eslint*'
+          - '@typescript-eslint/*'
+        update-types:
+          - 'minor'
+          - 'patch'
+      react-ecosystem:
+        patterns:
+          - 'react'
+          - 'react-dom'
+          - '@types/react*'
+        update-types:
+          - 'minor'
+          - 'patch'
+
+  # GitHub Actions
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+    commit-message:
+      prefix: 'chore(actions)'
