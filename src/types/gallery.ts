@@ -1,7 +1,8 @@
-import type { ReactNode, MouseEvent } from 'react'
 import type { SxProps, Theme } from '@mui/material'
+import type { ReactNode, MouseEvent } from 'react'
 
 // Basic media types
+export default {}
 export type MediaType = 'image' | 'video'
 
 export interface LocationData {
@@ -90,7 +91,7 @@ export interface ChildrenFnProps<T extends HTMLElement = HTMLElement> {
   close: () => void
 }
 
-export interface ItemProps<T extends HTMLElement = HTMLElement> 
+export interface ItemProps<T extends HTMLElement = HTMLElement>
   extends Omit<GalleryItem, 'id'> {
   sourceId: string | number
   children: (props: ChildrenFnProps<T>) => ReactNode
