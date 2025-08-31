@@ -159,6 +159,7 @@ export const ImageZoom: React.FC<ImageZoomProps> = ({
       onWheel={handleWheel}
       onClick={scale === minZoom ? handleZoomIn : undefined}
     >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         ref={imageRef}
         src={src}
@@ -236,4 +237,5 @@ export const ImageZoom: React.FC<ImageZoomProps> = ({
     </Box>
   )
 }
-export default { ImageZoom }
+
+export default ImageZoom
