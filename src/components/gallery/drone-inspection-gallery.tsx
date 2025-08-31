@@ -671,7 +671,12 @@ export function DroneInspectionGallery() {
                   left: 16,
                   color: 'white',
                   backgroundColor: 'rgba(0, 0, 0, 0.4)',
-                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.6)' },
+                  zIndex: 10,
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                  },
                 }}
               >
                 <NavigateBeforeIcon />
@@ -693,8 +698,13 @@ export function DroneInspectionGallery() {
                   position: 'absolute',
                   right: 16,
                   color: 'white',
+                  zIndex: 10,
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
                   backgroundColor: 'rgba(0, 0, 0, 0.4)',
-                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.6)' },
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                  },
                 }}
               >
                 <NavigateNextIcon />
