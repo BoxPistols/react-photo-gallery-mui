@@ -149,7 +149,11 @@ export const ImageZoom: React.FC<ImageZoomProps> = ({
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.1)',
         borderRadius: 1,
-        cursor: isDragging ? 'grabbing' : scale > minZoom ? 'grab' : 'zoom-in',
+        cursor: (() => {
+          if (isDragging) return 'grabbing'
+          if (scale > minZoom) return 'grab'
+          return 'zoom-in'
+        })(),
       }}
       ref={containerRef}
       onMouseDown={handleMouseDown}

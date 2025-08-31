@@ -189,6 +189,7 @@ export function DroneInspectionGallery() {
               },
             }}
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={item.thumbnail}
               alt={item.title}
