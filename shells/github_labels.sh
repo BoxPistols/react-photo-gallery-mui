@@ -325,7 +325,8 @@ create_labels() {
   fi
 
   # ラベル数の取得
-  local total=$(jq '. | length' "$input_file")
+  local total
+  total=$(jq '. | length' "$input_file")
   echo "読み込んだラベル数: $total"
 
   echo "同名ラベルの処理について:"
@@ -334,6 +335,18 @@ create_labels() {
   echo "- 新規ラベル: 新規作成"
   echo "※ 比較ロジックの制限により、同値でも更新される場合があります"
   echo
+
+  # ループの前に、既存のラベルをすべて取得して連想配列に格納
+  declare -A existing_labels_map
+  echo "既存のラベル情報を取得中..."
+  while IFS= read -r line; do
+    local name_from_gh
+    name_from_gh=$(echo "$line" | jq -r '.name')
+    if [ -n "$name_from_gh" ]; then
+      existing_labels_map["$name_from_gh"]=$line
+    fi
+  done < <(gh label list -R "${REPO}" --json name,color,description | jq -c '.[]')
+  echo "既存ラベル情報のキャッシュ完了: ${#existing_labels_map[@]}件"
 
   # ラベル作成
   echo "リポジトリ $REPO にラベルを作成しています..."
@@ -353,52 +366,46 @@ create_labels() {
     current=$((current + 1))
     echo "[$current/$total] ラベル '${name}' を処理中..."
 
-    # 既存ラベルのチェックと処理
-    local existing_label_info=""
-    if gh label list -R "${REPO}" --json name | jq -r '.[].name' | grep -q "^${name}$"; then
-      # 既存ラベルの詳細情報を取得
-      existing_label_info=$(gh label list -R "${REPO}" --json name,color,description | jq -r ".[] | select(.name == \"${name}\") | @base64")
+    # 既存ラベルのチェックと処理 (Optimized)
+    if [[ -v "existing_labels_map[${name}]" ]]; then
+      local existing_label_json=${existing_labels_map[${name}]}
+      _existing_jq() {
+        echo "$existing_label_json" | jq -r "${1}"
+      }
 
-      if [ -n "$existing_label_info" ]; then
-        _existing_jq() {
-          echo "$existing_label_info" | decode_base64 | jq -r "${1}"
-        }
+      local existing_color
+      existing_color=$(_existing_jq '.color')
+      local existing_description
+      existing_description=$(_existing_jq '.description')
 
-        local existing_color=$(_existing_jq '.color')
-        local existing_description=$(_existing_jq '.description')
+      # null値を空文字列に正規化
+      if [ "$existing_description" = "null" ]; then
+        existing_description=""
+      fi
+      if [ "$description" = "null" ]; then
+        description=""
+      fi
 
-                  # null値を空文字列に正規化
-         if [ "$existing_description" = "null" ]; then
-           existing_description=""
-         fi
-         if [ "$description" = "null" ]; then
-           description=""
-         fi
+      # 色の値を小文字に統一（GitHub APIは大文字小文字を区別しない場合がある）
+      existing_color=$(echo "$existing_color" | tr '[:upper:]' '[:lower:]')
+      color=$(echo "$color" | tr '[:upper:]' '[:lower:]')
 
-         # 色の値を小文字に統一（GitHub APIは大文字小文字を区別しない場合がある）
-         existing_color=$(echo "$existing_color" | tr '[:upper:]' '[:lower:]')
-         color=$(echo "$color" | tr '[:upper:]' '[:lower:]')
-
-         # 同値チェック
-         if [ "$color" = "$existing_color" ] && [ "$description" = "$existing_description" ]; then
-           echo "  ⏭️  ラベル '${name}' は同値のためスキップ"
-           success=$((success + 1))
-           continue
-         else
-           echo "  🔄 ラベル '${name}' を更新します"
-           if [ "$DEBUG_MODE" = "true" ]; then
-             echo "    既存: color='$existing_color', description='$existing_description'"
-             echo "    新規: color='$color', description='$description'"
-           fi
-           gh label delete "${name}" -R "${REPO}" --yes
-         fi
-       else
-         echo "  🔄 ラベル '${name}' を更新します"
-         gh label delete "${name}" -R "${REPO}" --yes
-       fi
-     else
-       echo "  ➕ 新規ラベル '${name}' を作成します"
-     fi
+      # 同値チェック
+      if [ "$color" = "$existing_color" ] && [ "$description" = "$existing_description" ]; then
+        echo "  ⏭️  ラベル '${name}' は同値のためスキップ"
+        success=$((success + 1))
+        continue
+      else
+        echo "  🔄 ラベル '${name}' を更新します"
+        if [ "$DEBUG_MODE" = "true" ]; then
+          echo "    既存: color='$existing_color', description='$existing_description'"
+          echo "    新規: color='$color', description='$description'"
+        fi
+        gh label delete "${name}" -R "${REPO}" --yes
+      fi
+    else
+      echo "  ➕ 新規ラベル '${name}' を作成します"
+    fi
 
     if ! gh label create "${name}" -c "${color}" -d "${description}" -R "${REPO}"; then
       echo "  警告: ラベル '${name}' の作成に失敗しました" >&2
@@ -431,14 +438,17 @@ create_labels() {
         echo "再トライ: ラベル '$label' を処理中..."
 
         # ラベル情報を取得
-        local label_info=$(jq -r ".[] | select(.name == \"$label\") | @base64" "$input_file")
+        local label_info
+        label_info=$(jq -r ".[] | select(.name == \"$label\") | @base64" "$input_file")
         if [ -n "$label_info" ]; then
           _jq() {
             echo "$label_info" | decode_base64 | jq -r "${1}"
           }
 
-          local color=$(_jq '.color')
-          local description=$(_jq '.description')
+          local color
+          color=$(_jq '.color')
+          local description
+          description=$(_jq '.description')
 
           # 既存ラベルの削除を試行
           if gh label list -R "${REPO}" --json name | jq -r '.[].name' | grep -q "^${label}$"; then
@@ -472,6 +482,7 @@ create_labels() {
     fi
   fi
 }
+
 
 # バックアップからラベルを復元
 restore_labels() {
