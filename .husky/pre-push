@@ -1,5 +1,4 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+
 
 # 型チェック、lint、テストを実行
 echo "🔍 Running type check..."
@@ -9,7 +8,7 @@ echo "🧹 Running lint check..."
 pnpm lint-all
 
 echo "🧪 Running tests..."
-pnpm test --run
+pnpm test
 
 echo "🏗️  Running build test..."
 pnpm build
