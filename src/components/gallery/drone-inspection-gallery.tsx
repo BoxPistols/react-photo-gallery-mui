@@ -346,9 +346,9 @@ const sampleItems: GalleryItem[] = [
   {
     id: '16',
     type: 'image',
-    url: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=800&q=80',
     thumbnail:
-      'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=300&h=200&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=300&h=200&fit=crop&q=80',
     title: '風力発電所点検_02',
     width: 800,
     height: 600,
