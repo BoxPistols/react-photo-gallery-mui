@@ -147,14 +147,9 @@ get_repo_info() {
 }
 
 # base64デコード関数（環境差異を吸収）
+# base64デコード関数（環境差異を吸収）
 decode_base64() {
-  if [ "$OS_TYPE" = "mac" ]; then
-    # macOS
-    echo "$1" | base64 --decode
-  else
-    # Linux
-    echo "$1" | base64 --decode
-  fi
+  echo "$1" | base64 --decode
 }
 
 # 依存コマンドのチェック
