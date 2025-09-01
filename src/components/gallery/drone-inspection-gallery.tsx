@@ -26,6 +26,12 @@ import type { GalleryItem } from '@/types/gallery'
 
 import { ImageZoom } from './image-zoom'
 
+interface DroneInspectionGalleryProps {
+  forceColumns?: number | null
+  showDebugInfo?: boolean
+  themeMode?: 'light' | 'dark'
+}
+
 // ドローン点検用サンプルデータ（産業・インフラ画像）
 const sampleItems: GalleryItem[] = [
   {
@@ -73,9 +79,9 @@ const sampleItems: GalleryItem[] = [
   {
     id: '3',
     type: 'image',
-    url: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1548690312-e3b507d8c110?w=800&q=80',
     thumbnail:
-      'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=300&h=200&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1548690312-e3b507d8c110?w=300&h=200&fit=crop&q=80',
     title: '風力発電所点検_01',
     width: 800,
     height: 600,
@@ -115,9 +121,9 @@ const sampleItems: GalleryItem[] = [
   {
     id: '5',
     type: 'image',
-    url: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1572201050000-0c2e9b5ad9be?w=800&q=80',
     thumbnail:
-      'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=300&h=200&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1572201050000-0c2e9b5ad9be?w=300&h=200&fit=crop&q=80',
     title: '橋梁点検_01',
     width: 800,
     height: 600,
@@ -136,9 +142,9 @@ const sampleItems: GalleryItem[] = [
   {
     id: '6',
     type: 'image',
-    url: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=800&q=80',
     thumbnail:
-      'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=300&h=200&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=300&h=200&fit=crop&q=80',
     title: '太陽光パネル点検_02',
     width: 800,
     height: 600,
@@ -262,9 +268,9 @@ const sampleItems: GalleryItem[] = [
   {
     id: '12',
     type: 'image',
-    url: 'https://images.unsplash.com/photo-1545529468-42764ef8c85f?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1562722086-5bf8a33b3a49?w=800&q=80',
     thumbnail:
-      'https://images.unsplash.com/photo-1545529468-42764ef8c85f?w=300&h=200&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1562722086-5bf8a33b3a49?w=300&h=200&fit=crop&q=80',
     title: '太陽光パネル点検_03',
     width: 800,
     height: 600,
@@ -283,9 +289,9 @@ const sampleItems: GalleryItem[] = [
   {
     id: '13',
     type: 'image',
-    url: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1590736969955-71cc94901144?w=800&q=80',
     thumbnail:
-      'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&h=200&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1590736969955-71cc94901144?w=300&h=200&fit=crop&q=80',
     title: '建築現場点検_01',
     width: 800,
     height: 600,
@@ -304,9 +310,9 @@ const sampleItems: GalleryItem[] = [
   {
     id: '14',
     type: 'image',
-    url: 'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?w=800&q=80',
     thumbnail:
-      'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=300&h=200&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?w=300&h=200&fit=crop&q=80',
     title: '橋梁点検_02',
     width: 800,
     height: 600,
@@ -346,9 +352,9 @@ const sampleItems: GalleryItem[] = [
   {
     id: '16',
     type: 'image',
-    url: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1497436072909-f5e92eb4718c?w=800&q=80',
     thumbnail:
-      'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=300&h=200&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1497436072909-f5e92eb4718c?w=300&h=200&fit=crop&q=80',
     title: '風力発電所点検_02',
     width: 800,
     height: 600,
@@ -367,9 +373,9 @@ const sampleItems: GalleryItem[] = [
   {
     id: '17',
     type: 'image',
-    url: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80',
     thumbnail:
-      'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=300&h=200&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=300&h=200&fit=crop&q=80',
     title: 'ビル外壁点検_01',
     width: 800,
     height: 600,
@@ -409,9 +415,9 @@ const sampleItems: GalleryItem[] = [
   {
     id: '19',
     type: 'image',
-    url: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&q=80',
     thumbnail:
-      'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=300&h=200&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=300&h=200&fit=crop&q=80',
     title: '太陽光パネル点検_04',
     width: 800,
     height: 600,
@@ -448,20 +454,240 @@ const sampleItems: GalleryItem[] = [
       status: 'normal',
     },
   },
+  {
+    id: '21',
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1520637836862-4d197d17c91a?w=800&q=80',
+    thumbnail:
+      'https://images.unsplash.com/photo-1520637836862-4d197d17c91a?w=300&h=200&fit=crop&q=80',
+    title: '鉄道橋梁点検_01',
+    width: 800,
+    height: 600,
+    metadata: {
+      captureDate: '2023-07-05T11:20:00',
+      location: { name: '東海道新幹線橋梁', lat: 35.1709, lng: 136.8816 },
+      resolution: '4000x3000',
+      droneModel: 'DJI Air 2S',
+      tags: [
+        { id: 'railway', label: '鉄道橋梁', color: '#607d8b' },
+        { id: 'normal', label: '正常', color: '#4caf50' },
+      ],
+      status: 'normal',
+    },
+  },
+  {
+    id: '22',
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
+    thumbnail:
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=200&fit=crop&q=80',
+    title: '風力発電所点検_03',
+    width: 800,
+    height: 600,
+    metadata: {
+      captureDate: '2023-07-06T14:15:00',
+      location: { name: '北海道風力発電所', lat: 43.0644, lng: 141.3468 },
+      resolution: '6000x4000',
+      droneModel: 'DJI Phantom 4 Pro',
+      tags: [
+        { id: 'wind', label: '風力発電', color: '#2196f3' },
+        { id: 'normal', label: '正常', color: '#4caf50' },
+      ],
+      status: 'normal',
+    },
+  },
+  {
+    id: '23',
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=800&q=80',
+    thumbnail:
+      'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&h=200&fit=crop&q=80',
+    title: 'トンネル入口点検_01',
+    width: 800,
+    height: 600,
+    metadata: {
+      captureDate: '2023-07-07T09:30:00',
+      location: { name: '関越トンネル入口', lat: 36.7372, lng: 138.9854 },
+      resolution: '3840x2160',
+      droneModel: 'DJI Mini 3 Pro',
+      tags: [
+        { id: 'tunnel', label: 'トンネル', color: '#795548' },
+        { id: 'attention', label: '要注意', color: '#ff9800' },
+      ],
+      status: 'attention',
+    },
+  },
+  {
+    id: '24',
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80',
+    thumbnail:
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop&q=80',
+    title: '橋梁点検_03',
+    width: 800,
+    height: 600,
+    metadata: {
+      captureDate: '2023-07-08T13:45:00',
+      location: { name: '明石海峡大橋', lat: 34.6161, lng: 135.0215 },
+      resolution: '6000x4000',
+      droneModel: 'DJI Mavic 3',
+      tags: [
+        { id: 'bridge', label: '橋梁', color: '#607d8b' },
+        { id: 'normal', label: '正常', color: '#4caf50' },
+      ],
+      status: 'normal',
+    },
+  },
+  {
+    id: '25',
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1567789884554-0b844b597180?w=800&q=80',
+    thumbnail:
+      'https://images.unsplash.com/photo-1567789884554-0b844b597180?w=300&h=200&fit=crop&q=80',
+    title: '化学工場点検_02',
+    width: 800,
+    height: 600,
+    metadata: {
+      captureDate: '2023-07-09T16:20:00',
+      location: { name: '四日市工業地帯', lat: 34.9652, lng: 136.6169 },
+      resolution: '4000x3000',
+      droneModel: 'DJI Air 2S',
+      tags: [
+        { id: 'chemical', label: '化学工場', color: '#9c27b0' },
+        { id: 'normal', label: '正常', color: '#4caf50' },
+      ],
+      status: 'normal',
+    },
+  },
+  {
+    id: '26',
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1448630360428-65456885c650?w=800&q=80',
+    thumbnail:
+      'https://images.unsplash.com/photo-1448630360428-65456885c650?w=300&h=200&fit=crop&q=80',
+    title: 'ビル外壁点検_02',
+    width: 800,
+    height: 600,
+    metadata: {
+      captureDate: '2023-07-10T10:10:00',
+      location: { name: '大阪梅田スカイビル', lat: 34.7024, lng: 135.4959 },
+      resolution: '6000x4000',
+      droneModel: 'DJI Phantom 4 Pro',
+      tags: [
+        { id: 'building', label: 'ビル', color: '#795548' },
+        { id: 'repair', label: '要修理', color: '#f44336' },
+      ],
+      status: 'repair_needed',
+    },
+  },
+  {
+    id: '27',
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1615729947596-a598e5de0ab3?w=800&q=80',
+    thumbnail:
+      'https://images.unsplash.com/photo-1615729947596-a598e5de0ab3?w=300&h=200&fit=crop&q=80',
+    title: '太陽光パネル点検_05',
+    width: 800,
+    height: 600,
+    metadata: {
+      captureDate: '2023-07-11T12:00:00',
+      location: { name: '福島発電所F地区', lat: 37.7504, lng: 140.4676 },
+      resolution: '3840x2160',
+      droneModel: 'DJI Mini 3 Pro',
+      tags: [
+        { id: 'solar', label: '太陽光パネル', color: '#ff9800' },
+        { id: 'normal', label: '正常', color: '#4caf50' },
+      ],
+      status: 'normal',
+    },
+  },
+  {
+    id: '28',
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1594736797933-d0802ba11ccd?w=800&q=80',
+    thumbnail:
+      'https://images.unsplash.com/photo-1594736797933-d0802ba11ccd?w=300&h=200&fit=crop&q=80',
+    title: '送電線点検_02',
+    width: 800,
+    height: 600,
+    metadata: {
+      captureDate: '2023-07-12T15:30:00',
+      location: { name: '九州送電線網', lat: 33.5902, lng: 130.4017 },
+      resolution: '4000x3000',
+      droneModel: 'DJI Air 2S',
+      tags: [
+        { id: 'powerline', label: '送電線', color: '#ff5722' },
+        { id: 'attention', label: '要注意', color: '#ff9800' },
+      ],
+      status: 'attention',
+    },
+  },
+  {
+    id: '29',
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=800&q=80',
+    thumbnail:
+      'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=300&h=200&fit=crop&q=80',
+    title: '鉄道橋梁点検_02',
+    width: 800,
+    height: 600,
+    metadata: {
+      captureDate: '2023-07-13T08:45:00',
+      location: { name: '山陽新幹線橋梁', lat: 34.6901, lng: 135.1955 },
+      resolution: '6000x4000',
+      droneModel: 'DJI Mavic 3',
+      tags: [
+        { id: 'railway', label: '鉄道橋梁', color: '#607d8b' },
+        { id: 'normal', label: '正常', color: '#4caf50' },
+      ],
+      status: 'normal',
+    },
+  },
+  {
+    id: '30',
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=800&q=80',
+    thumbnail:
+      'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=300&h=200&fit=crop&q=80',
+    title: '風力発電所点検_04',
+    width: 800,
+    height: 600,
+    metadata: {
+      captureDate: '2023-07-14T11:15:00',
+      location: { name: '沖縄風力発電所', lat: 26.2124, lng: 127.6809 },
+      resolution: '3840x2160',
+      droneModel: 'DJI Phantom 4 Pro',
+      tags: [
+        { id: 'wind', label: '風力発電', color: '#2196f3' },
+        { id: 'repaired', label: '修理完了', color: '#4caf50' },
+      ],
+      status: 'repaired',
+    },
+  },
 ]
 
-export function DroneInspectionGallery() {
+function DroneInspectionGallery({
+  forceColumns = null,
+  showDebugInfo = false,
+  themeMode = 'light',
+}: DroneInspectionGalleryProps = {}) {
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set())
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
+  // 列数の決定ロジック
+  const getColumns = () => {
+    if (forceColumns !== null) return forceColumns
+    return isMobile ? 2 : 3
+  }
+
   // フォールバック画像URL
   const fallbackImageUrl =
-    'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80'
+    'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&q=80'
   const fallbackThumbnailUrl =
-    'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=300&h=200&fit=crop&q=80'
+    'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=300&h=200&fit=crop&q=80'
 
   const handleOpen = (item: GalleryItem, index: number) => {
     setSelectedItem(item)
@@ -565,10 +791,19 @@ export function DroneInspectionGallery() {
         sx={{ mb: 4 }}
       >
         ドローン点検 撮影ログギャラリー
+        {showDebugInfo && (
+          <Typography
+            variant="caption"
+            sx={{ display: 'block', mt: 1, color: 'text.secondary' }}
+          >
+            Theme: {themeMode} | Columns: {getColumns()} | Images:{' '}
+            {sampleItems.length}
+          </Typography>
+        )}
       </Typography>
 
       {/* サムネイル一覧 */}
-      <ImageList variant="masonry" cols={isMobile ? 2 : 3} gap={12}>
+      <ImageList variant="masonry" cols={getColumns()} gap={12}>
         {sampleItems.map((item, index) => (
           <ImageListItem
             key={item.id}
@@ -819,4 +1054,5 @@ export function DroneInspectionGallery() {
     </>
   )
 }
-export default { DroneInspectionGallery }
+
+export default DroneInspectionGallery

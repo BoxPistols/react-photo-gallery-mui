@@ -4,10 +4,7 @@ import { Container, Typography, Box } from '@mui/material'
 import dynamic from 'next/dynamic'
 
 const DroneInspectionGallery = dynamic(
-  () =>
-    import('@/components/gallery/drone-inspection-gallery').then((mod) => ({
-      default: mod.DroneInspectionGallery,
-    })),
+  () => import('@/components/gallery/drone-inspection-gallery'),
   { ssr: false }
 )
 

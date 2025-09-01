@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { DroneInspectionGallery } from './drone-inspection-gallery'
+import DroneInspectionGallery from './drone-inspection-gallery'
 
 const meta: Meta<typeof DroneInspectionGallery> = {
   title: 'Gallery/DroneInspectionGallery',
