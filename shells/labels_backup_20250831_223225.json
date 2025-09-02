@@ -1,0 +1,62 @@
+[
+  { "color": "ffb300", "description": "API・外部サービス連携", "name": "API" },
+  { "color": "7057ff", "description": "BFF・バックエンド連携", "name": "BFF" },
+  { "color": "00ced1", "description": "CI/CD・自動化", "name": "CI/CD" },
+  {
+    "color": "008672",
+    "description": "Componentの追加 更新",
+    "name": "Component"
+  },
+  {
+    "color": "332412",
+    "description": "ドキュメントの追加 更新",
+    "name": "Docs"
+  },
+  { "color": "ff6347", "description": "緊急修正・Hotfix", "name": "Hotfix" },
+  {
+    "color": "1e90ff",
+    "description": "地図・マップ・経路・ウェイポイント関連",
+    "name": "Map"
+  },
+  {
+    "color": "00c851",
+    "description": "Next.js特有の機能・SSR・SSG・App Router",
+    "name": "Next.js"
+  },
+  {
+    "color": "ffc107",
+    "description": "パフォーマンス最適化",
+    "name": "Performance"
+  },
+  {
+    "color": "a9a9a9",
+    "description": "リファクタリング・コード整理",
+    "name": "Refactoring"
+  },
+  {
+    "color": "08a4d6",
+    "description": "テスト・E2E・ユニットテスト",
+    "name": "Test"
+  },
+  { "color": "ff69b4", "description": "デザインテーマ設計", "name": "Theme" },
+  { "color": "795548", "description": "Turbo・モノレポ管理", "name": "Turbo" },
+  {
+    "color": "e91e63",
+    "description": "TypeScript型定義・型安全性",
+    "name": "TypeScript"
+  },
+  {
+    "color": "3f51b5",
+    "description": "UI Cording・MUI・Tailwind",
+    "name": "UI Code"
+  },
+  { "color": "d876e3", "description": "UIUXデザイン", "name": "UIUX" },
+  { "color": "d93f0b", "description": "仕様変更", "name": "仕様変更" },
+  { "color": "b3fa11", "description": "機能追加", "name": "機能追加" },
+  {
+    "color": "c5def5",
+    "description": "開発環境 パッケージの追加 変更 更新",
+    "name": "環境構築"
+  },
+  { "color": "16c9f5", "description": "画面の追加 更新", "name": "画面追加" }
+]
