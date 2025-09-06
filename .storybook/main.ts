@@ -21,7 +21,7 @@ const config: StorybookConfig = {
 
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@': '/Users/ai/client/KSD/UI/react-photoswipe-gallery-mui/src',
+      '@': require('path').resolve(__dirname, '../src'),
     }
 
     // Ensure React is available globally
