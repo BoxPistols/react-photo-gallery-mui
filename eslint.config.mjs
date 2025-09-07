@@ -55,6 +55,7 @@ const eslintConfig = [
 
       // Next.js Rules
       '@next/next/no-img-element': 'warn', // 警告レベル（最適化推奨）
+      '@next/next/no-page-custom-font': 'off', // App Routerでは適用外
 
       // Import Rules
       'import/no-duplicates': 'error',
