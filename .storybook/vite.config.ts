@@ -16,4 +16,19 @@ export default defineConfig({
   css: {
     postcss: './postcss.config.mjs',
   },
+  build: {
+    rollupOptions: {
+      onLog(level, log, handler) {
+        // Suppress "use client" directive warnings
+        if (
+          log.message?.includes(
+            'Module level directives cause errors when bundled'
+          )
+        ) {
+          return
+        }
+        handler(level, log)
+      },
+    },
+  },
 })

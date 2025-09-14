@@ -42,6 +42,9 @@ jobs:
       - name: Build Storybook
         run: pnpm build-storybook
 
+      - name: Add .nojekyll file
+        run: touch storybook-static/.nojekyll
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
