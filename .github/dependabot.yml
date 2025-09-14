@@ -20,25 +20,25 @@ updates:
         patterns:
           - '@storybook/*'
           - 'storybook'
-        update-types: ['major']  # minor/patchから変更
+        update-types: ['major'] # minor/patchから変更
       testing-dependencies:
         patterns:
           - '@testing-library/*'
           - '@vitest/*'
           - 'vitest'
           - 'jsdom'
-        update-types: ['major']  # minor/patchから変更
+        update-types: ['major'] # minor/patchから変更
       eslint-dependencies:
         patterns:
           - 'eslint*'
           - '@typescript-eslint/*'
-        update-types: ['major']  # minor/patchから変更
+        update-types: ['major'] # minor/patchから変更
       react-ecosystem:
         patterns:
           - 'react'
           - 'react-dom'
           - '@types/react*'
-        update-types: ['major']  # minor/patchから変更
+        update-types: ['major'] # minor/patchから変更
       # 新しいグループ: その他全ての依存関係をメジャー更新のみ対象に
       all-dependencies:
         patterns: ['*']

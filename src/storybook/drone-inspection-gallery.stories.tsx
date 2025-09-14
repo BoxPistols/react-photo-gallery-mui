@@ -14,12 +14,32 @@ const meta: Meta<typeof DroneInspectionGallery> = {
       },
     },
   },
+  argTypes: {
+    forceColumns: {
+      control: { type: 'number', min: 1, max: 6 },
+      description: 'レスポンシブなカラム数を上書きして固定値に設定',
+    },
+    showDebugInfo: {
+      control: 'boolean',
+      description: 'デバッグ情報の表示（開発機能）',
+    },
+    themeMode: {
+      control: { type: 'select' },
+      options: ['light', 'dark'],
+      description: 'ギャラリーのテーマモード',
+    },
+  },
 }
 
 export default meta
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof DroneInspectionGallery>
 
 export const Default: Story = {
+  args: {
+    forceColumns: null,
+    showDebugInfo: false,
+    themeMode: 'dark',
+  },
   parameters: {
     docs: {
       description: {
@@ -31,6 +51,11 @@ export const Default: Story = {
 }
 
 export const ZoomFunctionality: Story = {
+  args: {
+    forceColumns: 3,
+    showDebugInfo: false,
+    themeMode: 'dark',
+  },
   parameters: {
     docs: {
       description: {
