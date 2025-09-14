@@ -1,3 +1,4 @@
+import { resolve } from 'path'
 import type { StorybookConfig } from '@storybook/react-vite'
 
 const config: StorybookConfig = {
@@ -21,7 +22,7 @@ const config: StorybookConfig = {
 
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@': '/Users/ai/client/KSD/UI/react-photoswipe-gallery-mui/src',
+      '@': resolve(__dirname, '../src'),
     }
 
     // Ensure React is available globally
@@ -29,6 +30,38 @@ const config: StorybookConfig = {
       config.define = {}
     }
     config.define.global = 'globalThis'
+
+    // Suppress "use client" directive warnings during bundling
+    if (!config.build) {
+      config.build = {}
+    }
+    if (!config.build.rollupOptions) {
+      config.build.rollupOptions = {}
+    }
+    if (!config.build.rollupOptions.onLog) {
+      config.build.rollupOptions.onLog = (level, log, handler) => {
+        // Suppress "use client" directive warnings
+        if (
+          log.message?.includes(
+            'Module level directives cause errors when bundled'
+          )
+        ) {
+          return
+        }
+        // Suppress sourcemap warnings for "use client" files
+        if (
+          log.message?.includes(
+            "Error when using sourcemap for reporting an error: Can't resolve original location"
+          )
+        ) {
+          return
+        }
+        handler(level, log)
+      }
+    }
+
+    // Improve build performance and reduce warnings
+    config.build.sourcemap = false
 
     return config
   },
