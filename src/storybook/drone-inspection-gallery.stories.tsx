@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { DroneInspectionGallery } from '../components/gallery/drone-inspection-gallery'
+import DroneInspectionGallery from '../components/gallery/drone-inspection-gallery'
 
 const meta: Meta<typeof DroneInspectionGallery> = {
   title: 'Components/DroneInspectionGallery',
@@ -17,9 +17,10 @@ const meta: Meta<typeof DroneInspectionGallery> = {
 }
 
 export default meta
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof DroneInspectionGallery>
 
 export const Default: Story = {
+  args: {},
   parameters: {
     docs: {
       description: {
@@ -31,6 +32,7 @@ export const Default: Story = {
 }
 
 export const ZoomFunctionality: Story = {
+  args: {},
   parameters: {
     docs: {
       description: {

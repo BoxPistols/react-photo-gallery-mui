@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm type-check:*)",
+      "Bash(pnpm lint-all:*)",
+      "Bash(git remote get-url:*)",
+      "Bash(gh api:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
