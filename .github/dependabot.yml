@@ -1,6 +1,5 @@
 version: 2
 updates:
-  # npm dependencies
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
@@ -9,46 +8,42 @@ updates:
       time: '09:00'
     open-pull-requests-limit: 5
     reviewers:
-      - 'your-github-username' # 実際のGitHubユーザー名に変更
+      - 'your-github-username'
     assignees:
-      - 'your-github-username' # 実際のGitHubユーザー名に変更
+      - 'your-github-username'
     commit-message:
       prefix: 'chore(deps)'
       include: 'scope'
+    # メジャー更新のみを検出するように全グループを変更
     groups:
       storybook-dependencies:
         patterns:
           - '@storybook/*'
           - 'storybook'
-        update-types:
-          - 'minor'
-          - 'patch'
+        update-types: ['major']  # minor/patchから変更
       testing-dependencies:
         patterns:
           - '@testing-library/*'
           - '@vitest/*'
           - 'vitest'
           - 'jsdom'
-        update-types:
-          - 'minor'
-          - 'patch'
+        update-types: ['major']  # minor/patchから変更
       eslint-dependencies:
         patterns:
           - 'eslint*'
           - '@typescript-eslint/*'
-        update-types:
-          - 'minor'
-          - 'patch'
+        update-types: ['major']  # minor/patchから変更
       react-ecosystem:
         patterns:
           - 'react'
           - 'react-dom'
           - '@types/react*'
-        update-types:
-          - 'minor'
-          - 'patch'
+        update-types: ['major']  # minor/patchから変更
+      # 新しいグループ: その他全ての依存関係をメジャー更新のみ対象に
+      all-dependencies:
+        patterns: ['*']
+        update-types: ['major']
 
-  # GitHub Actions
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
@@ -57,3 +52,8 @@ updates:
       time: '09:00'
     commit-message:
       prefix: 'chore(actions)'
+    # GitHub Actionsもメジャー更新のみに制限
+    groups:
+      actions-dependencies:
+        patterns: ['*']
+        update-types: ['major']
