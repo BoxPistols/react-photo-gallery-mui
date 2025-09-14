@@ -5,7 +5,15 @@ import type { Meta, StoryObj } from '@storybook/react'
 
 import DroneInspectionGallery from '../components/gallery/drone-inspection-gallery'
 
-const meta: Meta<typeof DroneInspectionGallery> = {
+// Props interface for Storybook controls
+interface StoryArgs {
+  containerWidth?: number
+  themeMode?: 'light' | 'dark'
+  showDebugInfo?: boolean
+  forceColumns?: number | null
+}
+
+const meta: Meta<StoryArgs> = {
   title: 'Components/DroneInspectionGallery',
   component: DroneInspectionGallery,
   parameters: {
@@ -70,7 +78,7 @@ const meta: Meta<typeof DroneInspectionGallery> = {
 }
 
 export default meta
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<StoryArgs>
 
 export const Default: Story = {
   parameters: {
