@@ -26,6 +26,12 @@ import type { GalleryItem } from '@/types/gallery'
 
 import { ImageZoom } from './image-zoom'
 
+interface DroneInspectionGalleryProps {
+  forceColumns?: number | null
+  showDebugInfo?: boolean
+  themeMode?: 'light' | 'dark'
+}
+
 // ドローン点検用サンプルデータ（産業・インフラ画像）
 const sampleItems: GalleryItem[] = [
   {
@@ -73,9 +79,9 @@ const sampleItems: GalleryItem[] = [
   {
     id: '3',
     type: 'image',
-    url: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1548690312-e3b507d8c110?w=800&q=80',
     thumbnail:
-      'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=300&h=200&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1548690312-e3b507d8c110?w=300&h=200&fit=crop&q=80',
     title: '風力発電所点検_01',
     width: 800,
     height: 600,
@@ -115,9 +121,9 @@ const sampleItems: GalleryItem[] = [
   {
     id: '5',
     type: 'image',
-    url: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1572201050000-0c2e9b5ad9be?w=800&q=80',
     thumbnail:
-      'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=300&h=200&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1572201050000-0c2e9b5ad9be?w=300&h=200&fit=crop&q=80',
     title: '橋梁点検_01',
     width: 800,
     height: 600,
@@ -136,9 +142,9 @@ const sampleItems: GalleryItem[] = [
   {
     id: '6',
     type: 'image',
-    url: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=800&q=80',
     thumbnail:
-      'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=300&h=200&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=300&h=200&fit=crop&q=80',
     title: '太陽光パネル点検_02',
     width: 800,
     height: 600,
@@ -448,9 +454,55 @@ const sampleItems: GalleryItem[] = [
       status: 'normal',
     },
   },
+  {
+    id: '21',
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1520637836862-4d197d17c91a?w=800&q=80',
+    thumbnail:
+      'https://images.unsplash.com/photo-1520637836862-4d197d17c91a?w=300&h=200&fit=crop&q=80',
+    title: '鉄道橋梁点検_01',
+    width: 800,
+    height: 600,
+    metadata: {
+      captureDate: '2023-07-05T11:20:00',
+      location: { name: '東海道新幹線橋梁', lat: 35.1709, lng: 136.8816 },
+      resolution: '4000x3000',
+      droneModel: 'DJI Air 2S',
+      tags: [
+        { id: 'railway', label: '鉄道橋梁', color: '#607d8b' },
+        { id: 'normal', label: '正常', color: '#4caf50' },
+      ],
+      status: 'normal',
+    },
+  },
+  {
+    id: '22',
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
+    thumbnail:
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=200&fit=crop&q=80',
+    title: '風力発電所点検_03',
+    width: 800,
+    height: 600,
+    metadata: {
+      captureDate: '2023-07-06T14:15:00',
+      location: { name: '北海道風力発電所', lat: 43.0644, lng: 141.3468 },
+      resolution: '6000x4000',
+      droneModel: 'DJI Phantom 4 Pro',
+      tags: [
+        { id: 'wind', label: '風力発電', color: '#2196f3' },
+        { id: 'normal', label: '正常', color: '#4caf50' },
+      ],
+      status: 'normal',
+    },
+  },
 ]
 
-export function DroneInspectionGallery() {
+export function DroneInspectionGallery({
+  forceColumns = null,
+  showDebugInfo: _showDebugInfo = false,
+  themeMode: _themeMode = 'dark',
+}: DroneInspectionGalleryProps = {}) {
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set())
@@ -568,7 +620,11 @@ export function DroneInspectionGallery() {
       </Typography>
 
       {/* サムネイル一覧 */}
-      <ImageList variant="masonry" cols={isMobile ? 2 : 3} gap={12}>
+      <ImageList
+        variant="masonry"
+        cols={forceColumns ?? (isMobile ? 2 : 3)}
+        gap={12}
+      >
         {sampleItems.map((item, index) => (
           <ImageListItem
             key={item.id}
@@ -819,4 +875,5 @@ export function DroneInspectionGallery() {
     </>
   )
 }
-export default { DroneInspectionGallery }
+
+export default DroneInspectionGallery
