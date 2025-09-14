@@ -54,7 +54,7 @@ const meta: Meta<StoryArgs> = {
       description: '画像のロード状態やエラー情報を表示',
       table: {
         category: 'Debug',
-        defaultValue: { summary: false },
+        defaultValue: { summary: 'false' },
       },
     },
     // 画像グリッドの列数制御
