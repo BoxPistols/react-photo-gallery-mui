@@ -1,7 +1,4 @@
 
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 # 型チェック、lint、テスト、ビルドを実行
 echo "🔍 Running type check..."
 pnpm type-check
