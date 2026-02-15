@@ -44,14 +44,16 @@ const getStatusColor = (status: string) => {
 interface OverviewMapProps {
   items: GalleryItem[]
   height?: number
-  activeItemId?: string | null
+  hoveredItemId?: string | null
+  focusedItemId?: string | null
   onPinClick?: (item: GalleryItem, index: number) => void
 }
 
 export const OverviewMap: React.FC<OverviewMapProps> = ({
   items,
   height = 400,
-  activeItemId,
+  hoveredItemId,
+  focusedItemId,
   onPinClick,
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null)
@@ -174,10 +176,11 @@ export const OverviewMap: React.FC<OverviewMapProps> = ({
     }
   }, [items, maplibregl, handlePinClick])
 
-  // ギャラリー側のアクティブアイテムに連動してピンをハイライト＆フライ
+  // hover時: ピンのハイライト（スケール）のみ。flyToしない
   useEffect(() => {
+    const active = hoveredItemId || focusedItemId
     markersRef.current.forEach(({ el }, id) => {
-      if (id === activeItemId) {
+      if (id === active) {
         el.style.transform = 'scale(1.5)'
         el.style.zIndex = '10'
       } else {
@@ -185,9 +188,12 @@ export const OverviewMap: React.FC<OverviewMapProps> = ({
         el.style.zIndex = '1'
       }
     })
+  }, [hoveredItemId, focusedItemId])
 
-    if (activeItemId && mapRef.current) {
-      const entry = markersRef.current.get(activeItemId)
+  // クリック時のみ: flyTo + ポップアップ表示
+  useEffect(() => {
+    if (focusedItemId && mapRef.current) {
+      const entry = markersRef.current.get(focusedItemId)
       if (entry) {
         const lngLat = entry.marker.getLngLat()
         mapRef.current.flyTo({
@@ -198,7 +204,7 @@ export const OverviewMap: React.FC<OverviewMapProps> = ({
         entry.marker.togglePopup()
       }
     }
-  }, [activeItemId])
+  }, [focusedItemId])
 
   return (
     <Box sx={{ mb: 3 }}>

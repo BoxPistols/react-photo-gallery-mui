@@ -688,9 +688,8 @@ function DroneInspectionGallery({
   const [currentIndex, setCurrentIndex] = useState(0)
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set())
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid')
-  const [highlightedItemId, setHighlightedItemId] = useState<string | null>(
-    null
-  )
+  const [hoveredItemId, setHoveredItemId] = useState<string | null>(null)
+  const [focusedItemId, setFocusedItemId] = useState<string | null>(null)
   const itemRefs = useRef<Map<string, HTMLElement>>(new Map())
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
@@ -716,19 +715,18 @@ function DroneInspectionGallery({
     setSelectedItem(null)
   }
 
-  // ピンクリック → ギャラリーアイテムをハイライト＆スクロール
-  const handlePinSelect = useCallback((item: GalleryItem, index: number) => {
-    setHighlightedItemId(item.id)
+  // ピンクリック → テーブル該当行ハイライト＆スクロール（ダイアログは開かない）
+  const handlePinSelect = useCallback((item: GalleryItem, _index: number) => {
+    setFocusedItemId(item.id)
     const el = itemRefs.current.get(item.id)
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }
-    handleOpen(item, index)
   }, [])
 
-  // ギャラリーアイテムホバー → マップピンをハイライト
+  // ギャラリーアイテムホバー → マップピンをハイライトのみ
   const handleItemHover = useCallback((itemId: string | null) => {
-    setHighlightedItemId(itemId)
+    setHoveredItemId(itemId)
   }, [])
 
   const handleImageError = useCallback((imageId: string) => {
@@ -839,7 +837,8 @@ function DroneInspectionGallery({
       <OverviewMap
         items={sampleItems}
         height={500}
-        activeItemId={highlightedItemId}
+        hoveredItemId={hoveredItemId}
+        focusedItemId={focusedItemId}
         onPinClick={(item, index) => handlePinSelect(item, index)}
       />
 
@@ -890,9 +889,13 @@ function DroneInspectionGallery({
                 borderRadius: 1,
                 transition: 'box-shadow 0.2s, transform 0.2s',
                 boxShadow:
-                  highlightedItemId === item.id ? '0 0 0 3px #1976d2' : 'none',
+                  hoveredItemId === item.id || focusedItemId === item.id
+                    ? '0 0 0 3px #1976d2'
+                    : 'none',
                 transform:
-                  highlightedItemId === item.id ? 'scale(1.05)' : 'none',
+                  hoveredItemId === item.id || focusedItemId === item.id
+                    ? 'scale(1.05)'
+                    : 'none',
                 '&:hover': { opacity: 0.85 },
               }}
             >
@@ -947,7 +950,9 @@ function DroneInspectionGallery({
                     if (el) itemRefs.current.set(item.id, el)
                   }}
                   hover
-                  selected={highlightedItemId === item.id}
+                  selected={
+                    hoveredItemId === item.id || focusedItemId === item.id
+                  }
                   onClick={() => handleOpen(item, index)}
                   onMouseEnter={() => handleItemHover(item.id)}
                   onMouseLeave={() => handleItemHover(null)}
