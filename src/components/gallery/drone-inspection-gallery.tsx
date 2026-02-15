@@ -37,7 +37,7 @@ import type { GalleryItem } from '@/types/gallery'
 
 import { ImageZoom } from './image-zoom'
 import { LocationMap } from './location-map'
-import { OverviewMap } from './overview-map'
+import { OverviewMap, type OverviewMapHandle } from './overview-map'
 
 interface DroneInspectionGalleryProps {
   forceColumns?: number | null
@@ -691,6 +691,7 @@ function DroneInspectionGallery({
   const [hoveredItemId, setHoveredItemId] = useState<string | null>(null)
   const [focusedItemId, setFocusedItemId] = useState<string | null>(null)
   const itemRefs = useRef<Map<string, HTMLElement>>(new Map())
+  const mapRef = useRef<OverviewMapHandle>(null)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
@@ -718,15 +719,17 @@ function DroneInspectionGallery({
   // ピンクリック → テーブル該当行ハイライト＆スクロール（ダイアログは開かない）
   const handlePinSelect = useCallback((item: GalleryItem, _index: number) => {
     setFocusedItemId(item.id)
+    mapRef.current?.setFocusedItemId(item.id)
     const el = itemRefs.current.get(item.id)
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }
   }, [])
 
-  // ギャラリーアイテムホバー → マップピンをハイライトのみ
+  // ギャラリーアイテムホバー → マップピンをハイライトのみ（stateはギャラリー側のハイライト用）
   const handleItemHover = useCallback((itemId: string | null) => {
     setHoveredItemId(itemId)
+    mapRef.current?.setHoveredItemId(itemId)
   }, [])
 
   const handleImageError = useCallback((imageId: string) => {
@@ -835,10 +838,9 @@ function DroneInspectionGallery({
 
       {/* メイン: 撮影位置分布マップ */}
       <OverviewMap
+        ref={mapRef}
         items={sampleItems}
         height={500}
-        hoveredItemId={hoveredItemId}
-        focusedItemId={focusedItemId}
         onPinClick={handlePinSelect}
       />
 

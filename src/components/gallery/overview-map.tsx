@@ -1,6 +1,13 @@
 'use client'
 
-import React, { useRef, useEffect, useState } from 'react'
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useImperativeHandle,
+  forwardRef,
+  useCallback,
+} from 'react'
 import { Box, Typography } from '@mui/material'
 import type MaplibreGl from 'maplibre-gl'
 
@@ -44,87 +51,85 @@ const getStatusColor = (status: string) => {
 interface OverviewMapProps {
   items: GalleryItem[]
   height?: number
-  hoveredItemId?: string | null
-  focusedItemId?: string | null
   onPinClick?: (item: GalleryItem, index: number) => void
 }
 
-export const OverviewMap: React.FC<OverviewMapProps> = ({
-  items,
-  height = 400,
-  hoveredItemId,
-  focusedItemId,
-  onPinClick,
-}) => {
-  const mapContainer = useRef<HTMLDivElement>(null)
-  const mapRef = useRef<MaplibreGl.Map | null>(null)
-  const markersRef = useRef<
-    Map<string, { marker: MaplibreGl.Marker; el: HTMLDivElement }>
-  >(new Map())
-  const [maplibregl, setMaplibregl] = useState<typeof MaplibreGl | null>(null)
+export interface OverviewMapHandle {
+  setHoveredItemId: (id: string | null) => void
+  setFocusedItemId: (id: string | null) => void
+}
 
-  useEffect(() => {
-    let cancelled = false
-    import('maplibre-gl').then((mod) => {
-      if (!cancelled) {
-        setMaplibregl(mod.default || mod)
+export const OverviewMap = forwardRef<OverviewMapHandle, OverviewMapProps>(
+  ({ items, height = 400, onPinClick }, ref) => {
+    const mapContainer = useRef<HTMLDivElement>(null)
+    const mapRef = useRef<MaplibreGl.Map | null>(null)
+    const markersRef = useRef<
+      Map<string, { marker: MaplibreGl.Marker; el: HTMLDivElement }>
+    >(new Map())
+    const [maplibregl, setMaplibregl] = useState<typeof MaplibreGl | null>(null)
+
+    useEffect(() => {
+      let cancelled = false
+      import('maplibre-gl').then((mod) => {
+        if (!cancelled) {
+          setMaplibregl(mod.default || mod)
+        }
+      })
+      return () => {
+        cancelled = true
       }
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [])
+    }, [])
 
-  // refで最新のonPinClickを保持し、マップ初期化effectの依存から外す
-  const onPinClickRef = useRef(onPinClick)
-  useEffect(() => {
-    onPinClickRef.current = onPinClick
-  }, [onPinClick])
+    // refで最新のonPinClickを保持し、マップ初期化effectの依存から外す
+    const onPinClickRef = useRef(onPinClick)
+    useEffect(() => {
+      onPinClickRef.current = onPinClick
+    }, [onPinClick])
 
-  useEffect(() => {
-    if (!mapContainer.current || !maplibregl) return
+    useEffect(() => {
+      if (!mapContainer.current || !maplibregl) return
 
-    const geoItems = items
-      .map((item, index) => ({ item, index }))
-      .filter(
-        ({ item }) =>
-          item.metadata?.location?.lat && item.metadata?.location?.lng
-      )
+      const geoItems = items
+        .map((item, index) => ({ item, index }))
+        .filter(
+          ({ item }) =>
+            item.metadata?.location?.lat && item.metadata?.location?.lng
+        )
 
-    if (geoItems.length === 0) return
+      if (geoItems.length === 0) return
 
-    const firstLoc = geoItems[0].item.metadata?.location
-    const map = new maplibregl.Map({
-      container: mapContainer.current,
-      style: GSI_STYLE,
-      center: [firstLoc?.lng ?? 139.7, firstLoc?.lat ?? 35.7],
-      zoom: 5,
-    })
+      const firstLoc = geoItems[0].item.metadata?.location
+      const map = new maplibregl.Map({
+        container: mapContainer.current,
+        style: GSI_STYLE,
+        center: [firstLoc?.lng ?? 139.7, firstLoc?.lat ?? 35.7],
+        zoom: 5,
+      })
 
-    mapRef.current = map
+      mapRef.current = map
 
-    map.addControl(new maplibregl.NavigationControl(), 'top-right')
+      map.addControl(new maplibregl.NavigationControl(), 'top-right')
 
-    map.on('load', () => {
-      geoItems.forEach(({ item, index }) => {
-        const loc = item.metadata?.location
-        if (!loc) return
-        const status = item.metadata?.status || 'normal'
+      map.on('load', () => {
+        geoItems.forEach(({ item, index }) => {
+          const loc = item.metadata?.location
+          if (!loc) return
+          const status = item.metadata?.status || 'normal'
 
-        const markerEl = document.createElement('div')
-        markerEl.style.width = '32px'
-        markerEl.style.height = '32px'
-        markerEl.style.cursor = 'pointer'
-        markerEl.style.transition = 'transform 0.2s ease'
-        markerEl.innerHTML = `<svg viewBox="0 0 24 24" width="32" height="32">
+          const markerEl = document.createElement('div')
+          markerEl.style.width = '32px'
+          markerEl.style.height = '32px'
+          markerEl.style.cursor = 'pointer'
+          markerEl.style.transition = 'transform 0.2s ease'
+          markerEl.innerHTML = `<svg viewBox="0 0 24 24" width="32" height="32">
           <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="${getStatusColor(status)}" stroke="white" stroke-width="1.5"/>
           <circle cx="12" cy="9" r="3" fill="white"/>
         </svg>`
 
-        const popupContent = document.createElement('div')
-        popupContent.style.cursor = 'pointer'
-        popupContent.style.minWidth = '160px'
-        popupContent.innerHTML = `
+          const popupContent = document.createElement('div')
+          popupContent.style.cursor = 'pointer'
+          popupContent.style.minWidth = '160px'
+          popupContent.innerHTML = `
           <div style="text-align:center;">
             <img
               src="${item.thumbnail}"
@@ -136,61 +141,58 @@ export const OverviewMap: React.FC<OverviewMapProps> = ({
             <div style="font-size:11px;color:#666;margin-top:2px;">${loc.name}</div>
           </div>
         `
-        popupContent.addEventListener('click', () => {
-          onPinClickRef.current?.(item, index)
+          popupContent.addEventListener('click', () => {
+            onPinClickRef.current?.(item, index)
+          })
+
+          const popup = new maplibregl.Popup({
+            offset: 25,
+            closeButton: true,
+            maxWidth: '200px',
+          }).setDOMContent(popupContent)
+
+          const marker = new maplibregl.Marker({ element: markerEl })
+            .setLngLat([loc.lng, loc.lat])
+            .setPopup(popup)
+            .addTo(map)
+
+          markersRef.current.set(item.id, { marker, el: markerEl })
         })
 
-        const popup = new maplibregl.Popup({
-          offset: 25,
-          closeButton: true,
-          maxWidth: '200px',
-        }).setDOMContent(popupContent)
-
-        const marker = new maplibregl.Marker({ element: markerEl })
-          .setLngLat([loc.lng, loc.lat])
-          .setPopup(popup)
-          .addTo(map)
-
-        markersRef.current.set(item.id, { marker, el: markerEl })
+        if (geoItems.length > 1) {
+          const bounds = new maplibregl.LngLatBounds()
+          geoItems.forEach(({ item }) => {
+            const loc = item.metadata?.location
+            if (loc) bounds.extend([loc.lng, loc.lat])
+          })
+          map.fitBounds(bounds, { padding: 60 })
+        }
       })
 
-      if (geoItems.length > 1) {
-        const bounds = new maplibregl.LngLatBounds()
-        geoItems.forEach(({ item }) => {
-          const loc = item.metadata?.location
-          if (loc) bounds.extend([loc.lng, loc.lat])
-        })
-        map.fitBounds(bounds, { padding: 60 })
+      const currentMarkers = markersRef.current
+      return () => {
+        currentMarkers.forEach(({ marker }) => marker.remove())
+        currentMarkers.clear()
+        map.remove()
+        mapRef.current = null
       }
-    })
+    }, [items, maplibregl])
 
-    const currentMarkers = markersRef.current
-    return () => {
-      currentMarkers.forEach(({ marker }) => marker.remove())
-      currentMarkers.clear()
-      map.remove()
-      mapRef.current = null
-    }
-  }, [items, maplibregl])
+    const highlightMarker = useCallback((activeId: string | null) => {
+      markersRef.current.forEach(({ el }, id) => {
+        if (id === activeId) {
+          el.style.transform = 'scale(1.5)'
+          el.style.zIndex = '10'
+        } else {
+          el.style.transform = 'scale(1)'
+          el.style.zIndex = '1'
+        }
+      })
+    }, [])
 
-  // hover時: ピンのハイライト（スケール）のみ。flyToしない
-  useEffect(() => {
-    const active = hoveredItemId || focusedItemId
-    markersRef.current.forEach(({ el }, id) => {
-      if (id === active) {
-        el.style.transform = 'scale(1.5)'
-        el.style.zIndex = '10'
-      } else {
-        el.style.transform = 'scale(1)'
-        el.style.zIndex = '1'
-      }
-    })
-  }, [hoveredItemId, focusedItemId])
-
-  // クリック時のみ: flyTo + ポップアップ表示
-  useEffect(() => {
-    if (focusedItemId && mapRef.current) {
-      const entry = markersRef.current.get(focusedItemId)
+    const flyToMarker = useCallback((itemId: string) => {
+      if (!mapRef.current) return
+      const entry = markersRef.current.get(itemId)
       if (entry) {
         const lngLat = entry.marker.getLngLat()
         mapRef.current.flyTo({
@@ -200,33 +202,53 @@ export const OverviewMap: React.FC<OverviewMapProps> = ({
         })
         entry.marker.togglePopup()
       }
-    }
-  }, [focusedItemId])
+    }, [])
 
-  return (
-    <Box sx={{ mb: 3 }}>
-      <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 600 }}>
-        📍 撮影位置マップ
-      </Typography>
-      <Box
-        ref={mapContainer}
-        sx={{
-          width: '100%',
-          height,
-          borderRadius: 2,
-          overflow: 'hidden',
-          border: '1px solid',
-          borderColor: 'divider',
-        }}
-      />
-      <Typography
-        variant="caption"
-        sx={{ mt: 0.5, display: 'block', color: 'text.secondary' }}
-      >
-        ピンをクリックするとサムネイルが表示されます。サムネイルをクリックで写真を拡大表示します。
-      </Typography>
-    </Box>
-  )
-}
+    useImperativeHandle(
+      ref,
+      () => ({
+        setHoveredItemId: (id: string | null) => {
+          highlightMarker(id)
+        },
+        setFocusedItemId: (id: string | null) => {
+          if (id) {
+            highlightMarker(id)
+            flyToMarker(id)
+          } else {
+            highlightMarker(null)
+          }
+        },
+      }),
+      [highlightMarker, flyToMarker]
+    )
+
+    return (
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 600 }}>
+          📍 撮影位置マップ
+        </Typography>
+        <Box
+          ref={mapContainer}
+          sx={{
+            width: '100%',
+            height,
+            borderRadius: 2,
+            overflow: 'hidden',
+            border: '1px solid',
+            borderColor: 'divider',
+          }}
+        />
+        <Typography
+          variant="caption"
+          sx={{ mt: 0.5, display: 'block', color: 'text.secondary' }}
+        >
+          ピンをクリックするとサムネイルが表示されます。サムネイルをクリックで写真を拡大表示します。
+        </Typography>
+      </Box>
+    )
+  }
+)
+
+OverviewMap.displayName = 'OverviewMap'
 
 export default OverviewMap
