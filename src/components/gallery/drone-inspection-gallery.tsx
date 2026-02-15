@@ -839,7 +839,7 @@ function DroneInspectionGallery({
         height={500}
         hoveredItemId={hoveredItemId}
         focusedItemId={focusedItemId}
-        onPinClick={(item, index) => handlePinSelect(item, index)}
+        onPinClick={handlePinSelect}
       />
 
       {/* サブ: 撮影一覧（グリッド/テーブル切替） */}

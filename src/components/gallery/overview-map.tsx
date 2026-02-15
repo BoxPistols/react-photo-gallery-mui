@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, useEffect, useState, useCallback } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import { Box, Typography } from '@mui/material'
 import type MaplibreGl from 'maplibre-gl'
 
@@ -75,14 +75,11 @@ export const OverviewMap: React.FC<OverviewMapProps> = ({
     }
   }, [])
 
-  const handlePinClick = useCallback(
-    (item: GalleryItem, index: number) => {
-      if (onPinClick) {
-        onPinClick(item, index)
-      }
-    },
-    [onPinClick]
-  )
+  // refで最新のonPinClickを保持し、マップ初期化effectの依存から外す
+  const onPinClickRef = useRef(onPinClick)
+  useEffect(() => {
+    onPinClickRef.current = onPinClick
+  }, [onPinClick])
 
   useEffect(() => {
     if (!mapContainer.current || !maplibregl) return
@@ -140,7 +137,7 @@ export const OverviewMap: React.FC<OverviewMapProps> = ({
           </div>
         `
         popupContent.addEventListener('click', () => {
-          handlePinClick(item, index)
+          onPinClickRef.current?.(item, index)
         })
 
         const popup = new maplibregl.Popup({
@@ -174,7 +171,7 @@ export const OverviewMap: React.FC<OverviewMapProps> = ({
       map.remove()
       mapRef.current = null
     }
-  }, [items, maplibregl, handlePinClick])
+  }, [items, maplibregl])
 
   // hover時: ピンのハイライト（スケール）のみ。flyToしない
   useEffect(() => {
