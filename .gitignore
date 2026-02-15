@@ -21,4 +21,23 @@ storybook-static
 debug-storybook.log
 
 # TypeScript incremental compilation
-*.tsbuildinfo 
+*.tsbuildinfo
+
+# AI Agent
+
+## UI/UX PRO MAX
+.claude/skills/ui-ux-pro-max/
+.claude/settings.local.json
+.cursor/skills/ui-ux-pro-max/
+.windsurf/skills/ui-ux-pro-max/
+.agent/skills/ui-ux-pro-max/
+.github/prompts/ui-ux-pro-max/
+.kiro/steering/ui-ux-pro-max/
+.codebuddy/skills/ui-ux-pro-max/
+.codex/skills/ui-ux-pro-max/
+.continue/skills/ui-ux-pro-max/
+.gemini/skills/ui-ux-pro-max/
+.opencode/skills/ui-ux-pro-max/
+.qoder/skills/ui-ux-pro-max/
+.roo/skills/ui-ux-pro-max/
+.trae/skills/ui-ux-pro-max/
