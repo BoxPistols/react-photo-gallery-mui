@@ -1,6 +1,9 @@
 /* PhotoSwipe styles override */
 @import 'photoswipe/dist/photoswipe.css';
 
+/* MapLibre GL JS styles */
+@import 'maplibre-gl/dist/maplibre-gl.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
