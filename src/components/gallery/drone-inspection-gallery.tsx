@@ -6,6 +6,8 @@ import {
   CalendarToday as CalendarIcon,
   NavigateBefore as NavigateBeforeIcon,
   NavigateNext as NavigateNextIcon,
+  ViewModule as ViewModuleIcon,
+  TableRows as TableRowsIcon,
 } from '@mui/icons-material'
 import {
   Typography,
@@ -19,12 +21,23 @@ import {
   Divider,
   useTheme,
   useMediaQuery,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  ToggleButtonGroup,
+  ToggleButton,
 } from '@mui/material'
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 
 import type { GalleryItem } from '@/types/gallery'
 
 import { ImageZoom } from './image-zoom'
+import { LocationMap } from './location-map'
+import { OverviewMap } from './overview-map'
 
 interface DroneInspectionGalleryProps {
   forceColumns?: number | null
@@ -674,6 +687,11 @@ function DroneInspectionGallery({
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set())
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid')
+  const [highlightedItemId, setHighlightedItemId] = useState<string | null>(
+    null
+  )
+  const itemRefs = useRef<Map<string, HTMLElement>>(new Map())
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
@@ -697,6 +715,21 @@ function DroneInspectionGallery({
   const handleClose = () => {
     setSelectedItem(null)
   }
+
+  // ピンクリック → ギャラリーアイテムをハイライト＆スクロール
+  const handlePinSelect = useCallback((item: GalleryItem, index: number) => {
+    setHighlightedItemId(item.id)
+    const el = itemRefs.current.get(item.id)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
+    handleOpen(item, index)
+  }, [])
+
+  // ギャラリーアイテムホバー → マップピンをハイライト
+  const handleItemHover = useCallback((itemId: string | null) => {
+    setHighlightedItemId(itemId)
+  }, [])
 
   const handleImageError = useCallback((imageId: string) => {
     setImageErrors((prev) => new Set([...prev, imageId]))
@@ -788,7 +821,7 @@ function DroneInspectionGallery({
         component="h1"
         gutterBottom
         align="center"
-        sx={{ mb: 4 }}
+        sx={{ mb: 2 }}
       >
         ドローン点検 撮影ログギャラリー
         {showDebugInfo && (
@@ -802,57 +835,169 @@ function DroneInspectionGallery({
         )}
       </Typography>
 
-      {/* サムネイル一覧 */}
-      <ImageList variant="masonry" cols={getColumns()} gap={12}>
-        {sampleItems.map((item, index) => (
-          <ImageListItem
-            key={item.id}
-            onClick={() => handleOpen(item, index)}
-            sx={{
-              cursor: 'pointer',
-              overflow: 'hidden',
-              borderRadius: 2,
-              transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-              '&:hover': {
-                transform: 'scale(1.03)',
-                boxShadow: 4,
-              },
-            }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={getImageUrl(item, true)}
-              alt={item.title}
-              loading="lazy"
-              onError={() => handleImageError(item.id)}
-              style={{
-                width: '100%',
-                height: 'auto',
-                objectFit: 'cover',
+      {/* メイン: 撮影位置分布マップ */}
+      <OverviewMap
+        items={sampleItems}
+        height={500}
+        activeItemId={highlightedItemId}
+        onPinClick={(item, index) => handlePinSelect(item, index)}
+      />
+
+      {/* サブ: 撮影一覧（グリッド/テーブル切替） */}
+      <Box
+        sx={{
+          mt: 3,
+          mb: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+          撮影一覧（{sampleItems.length}件）
+        </Typography>
+        <ToggleButtonGroup
+          value={viewMode}
+          exclusive
+          onChange={(_, v) => {
+            if (v) setViewMode(v)
+          }}
+          size="small"
+        >
+          <ToggleButton value="grid" aria-label="グリッド表示">
+            <ViewModuleIcon fontSize="small" />
+          </ToggleButton>
+          <ToggleButton value="table" aria-label="テーブル表示">
+            <TableRowsIcon fontSize="small" />
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
+
+      {viewMode === 'grid' ? (
+        <ImageList cols={isMobile ? 3 : 6} gap={6} sx={{ mt: 1 }}>
+          {sampleItems.map((item, index) => (
+            <ImageListItem
+              key={item.id}
+              ref={(el: HTMLLIElement | null) => {
+                if (el) itemRefs.current.set(item.id, el)
               }}
-            />
-            <ImageListItemBar
-              title={item.title}
-              subtitle={
-                item.metadata
-                  ? new Date(item.metadata.captureDate).toLocaleDateString()
-                  : ''
-              }
+              onClick={() => handleOpen(item, index)}
+              onMouseEnter={() => handleItemHover(item.id)}
+              onMouseLeave={() => handleItemHover(null)}
               sx={{
-                borderBottomLeftRadius: 8,
-                borderBottomRightRadius: 8,
-                '& .MuiImageListItemBar-title': {
-                  fontSize: '0.9rem',
-                  fontWeight: 'bold',
-                },
-                '& .MuiImageListItemBar-subtitle': {
-                  fontSize: '0.8rem',
-                },
+                cursor: 'pointer',
+                overflow: 'hidden',
+                borderRadius: 1,
+                transition: 'box-shadow 0.2s, transform 0.2s',
+                boxShadow:
+                  highlightedItemId === item.id ? '0 0 0 3px #1976d2' : 'none',
+                transform:
+                  highlightedItemId === item.id ? 'scale(1.05)' : 'none',
+                '&:hover': { opacity: 0.85 },
               }}
-            />
-          </ImageListItem>
-        ))}
-      </ImageList>
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={getImageUrl(item, true)}
+                alt={item.title}
+                loading="lazy"
+                onError={() => handleImageError(item.id)}
+                style={{
+                  width: '100%',
+                  height: 80,
+                  objectFit: 'cover',
+                }}
+              />
+              <ImageListItemBar
+                title={item.title}
+                sx={{
+                  '& .MuiImageListItemBar-title': {
+                    fontSize: '0.65rem',
+                    lineHeight: 1.2,
+                  },
+                  '& .MuiImageListItemBar-titleWrap': {
+                    p: '4px 6px',
+                  },
+                }}
+              />
+            </ImageListItem>
+          ))}
+        </ImageList>
+      ) : (
+        <TableContainer
+          component={Paper}
+          variant="outlined"
+          sx={{ mt: 1, maxHeight: 360 }}
+        >
+          <Table size="small" stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 700, width: 60 }}>写真</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>タイトル</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>撮影日</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>場所</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>ステータス</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {sampleItems.map((item, index) => (
+                <TableRow
+                  key={item.id}
+                  ref={(el: HTMLTableRowElement | null) => {
+                    if (el) itemRefs.current.set(item.id, el)
+                  }}
+                  hover
+                  selected={highlightedItemId === item.id}
+                  onClick={() => handleOpen(item, index)}
+                  onMouseEnter={() => handleItemHover(item.id)}
+                  onMouseLeave={() => handleItemHover(null)}
+                  sx={{ cursor: 'pointer' }}
+                >
+                  <TableCell sx={{ p: 0.5 }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={getImageUrl(item, true)}
+                      alt={item.title}
+                      onError={() => handleImageError(item.id)}
+                      style={{
+                        width: 48,
+                        height: 36,
+                        objectFit: 'cover',
+                        borderRadius: 4,
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell sx={{ fontSize: '0.8rem' }}>
+                    {item.title}
+                  </TableCell>
+                  <TableCell sx={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
+                    {item.metadata
+                      ? new Date(item.metadata.captureDate).toLocaleDateString()
+                      : ''}
+                  </TableCell>
+                  <TableCell sx={{ fontSize: '0.8rem' }}>
+                    {item.metadata?.location.name || ''}
+                  </TableCell>
+                  <TableCell>
+                    {item.metadata && (
+                      <Chip
+                        label={getStatusLabel(item.metadata.status)}
+                        size="small"
+                        sx={{
+                          backgroundColor: getStatusColor(item.metadata.status),
+                          color: 'white',
+                          fontSize: '0.7rem',
+                          height: 22,
+                        }}
+                      />
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
 
       {/* 詳細表示ダイアログ */}
       <Dialog
@@ -1004,29 +1149,12 @@ function DroneInspectionGallery({
                   {selectedItem.metadata.location.lng})
                 </Typography>
 
-                <Box
-                  sx={{
-                    height: 200,
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                    borderRadius: 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    mb: 2,
-                  }}
-                >
-                  <Box sx={{ textAlign: 'center' }}>
-                    <LocationIcon
-                      sx={{ fontSize: 40, color: 'rgba(255, 255, 255, 0.5)' }}
-                    />
-                    <Typography
-                      variant="body2"
-                      sx={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                    >
-                      地図表示エリア
-                    </Typography>
-                  </Box>
-                </Box>
+                <LocationMap
+                  lat={selectedItem.metadata.location.lat}
+                  lng={selectedItem.metadata.location.lng}
+                  name={selectedItem.metadata.location.name}
+                  height={200}
+                />
 
                 {selectedItem.metadata.tags &&
                   selectedItem.metadata.tags.length > 0 && (
