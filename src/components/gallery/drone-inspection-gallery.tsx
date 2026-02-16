@@ -839,20 +839,25 @@ function DroneInspectionGallery({
   return (
     <>
       <Typography
-        variant="h4"
+        variant="body2"
         component="h1"
-        gutterBottom
-        align="center"
-        sx={{ mb: 2 }}
+        sx={{
+          mb: 1,
+          fontWeight: 600,
+          color: 'text.secondary',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 0.5,
+        }}
       >
-        ドローン点検 撮影ログギャラリー
+        📍 ドローン点検 撮影ログ
         {showDebugInfo && (
           <Typography
             variant="caption"
-            sx={{ display: 'block', mt: 1, color: 'text.secondary' }}
+            component="span"
+            sx={{ ml: 1, color: 'text.disabled' }}
           >
-            Theme: {themeMode} | Columns: {getColumns()} | Images:{' '}
-            {sampleItems.length}
+            {themeMode} | {getColumns()}col | {sampleItems.length}件
           </Typography>
         )}
       </Typography>
@@ -885,12 +890,18 @@ function DroneInspectionGallery({
             if (v) setViewMode(v)
           }}
           size="small"
+          sx={{
+            border: '1px solid',
+            borderColor: 'divider',
+          }}
         >
           <ToggleButton value="grid" aria-label="グリッド表示">
-            <ViewModuleIcon fontSize="small" />
+            <ViewModuleIcon fontSize="small" sx={{ mr: 0.5 }} />
+            Grid
           </ToggleButton>
           <ToggleButton value="table" aria-label="テーブル表示">
-            <TableRowsIcon fontSize="small" />
+            <TableRowsIcon fontSize="small" sx={{ mr: 0.5 }} />
+            Table
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>

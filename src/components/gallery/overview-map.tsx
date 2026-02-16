@@ -120,8 +120,7 @@ const OverviewMapInner = forwardRef<OverviewMapHandle, OverviewMapProps>(
           markerEl.style.width = '32px'
           markerEl.style.height = '32px'
           markerEl.style.cursor = 'pointer'
-          markerEl.style.transition = 'transform 0.2s ease'
-          markerEl.innerHTML = `<svg viewBox="0 0 24 24" width="32" height="32">
+          markerEl.innerHTML = `<svg viewBox="0 0 24 24" width="32" height="32" style="transition:transform 0.2s ease,filter 0.2s ease;transform-origin:bottom center">
           <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="${getStatusColor(status)}" stroke="white" stroke-width="1.5"/>
           <circle cx="12" cy="9" r="3" fill="white"/>
         </svg>`
@@ -180,11 +179,18 @@ const OverviewMapInner = forwardRef<OverviewMapHandle, OverviewMapProps>(
 
     const highlightMarker = useCallback((activeId: string | null) => {
       markersRef.current.forEach(({ el }, id) => {
+        const svg = el.querySelector('svg')
         if (id === activeId) {
-          el.style.transform = 'scale(1.5)'
+          if (svg) {
+            svg.style.transform = 'scale(1.5)'
+            svg.style.filter = 'drop-shadow(0 0 4px rgba(0,0,0,0.5))'
+          }
           el.style.zIndex = '10'
         } else {
-          el.style.transform = 'scale(1)'
+          if (svg) {
+            svg.style.transform = ''
+            svg.style.filter = ''
+          }
           el.style.zIndex = '1'
         }
       })
