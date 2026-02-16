@@ -679,11 +679,7 @@ const sampleItems: GalleryItem[] = [
   },
 ]
 
-function DroneInspectionGallery({
-  forceColumns = null,
-  showDebugInfo = false,
-  themeMode = 'light',
-}: DroneInspectionGalleryProps = {}) {
+function DroneInspectionGallery(_props: DroneInspectionGalleryProps = {}) {
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set())
@@ -694,12 +690,6 @@ function DroneInspectionGallery({
   const mapRef = useRef<OverviewMapHandle>(null)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-
-  // 列数の決定ロジック
-  const getColumns = () => {
-    if (forceColumns !== null) return forceColumns
-    return isMobile ? 2 : 3
-  }
 
   // フォールバック画像URL
   const fallbackImageUrl =
@@ -839,27 +829,17 @@ function DroneInspectionGallery({
   return (
     <>
       <Typography
-        variant="body2"
+        variant="caption"
         component="h1"
         sx={{
-          mb: 1,
+          mb: 0.5,
           fontWeight: 600,
-          color: 'text.secondary',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 0.5,
+          color: 'text.disabled',
+          fontSize: '0.75rem',
+          letterSpacing: '0.05em',
         }}
       >
-        📍 ドローン点検 撮影ログ
-        {showDebugInfo && (
-          <Typography
-            variant="caption"
-            component="span"
-            sx={{ ml: 1, color: 'text.disabled' }}
-          >
-            {themeMode} | {getColumns()}col | {sampleItems.length}件
-          </Typography>
-        )}
+        📍 ドローン点検ログ
       </Typography>
 
       {/* メイン: 撮影位置分布マップ */}
