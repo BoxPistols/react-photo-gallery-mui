@@ -688,8 +688,8 @@ function DroneInspectionGallery({
   const [currentIndex, setCurrentIndex] = useState(0)
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set())
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid')
-  const [hoveredItemId, setHoveredItemId] = useState<string | null>(null)
-  const [focusedItemId, setFocusedItemId] = useState<string | null>(null)
+  const hoveredItemIdRef = useRef<string | null>(null)
+  const focusedItemIdRef = useRef<string | null>(null)
   const itemRefs = useRef<Map<string, HTMLElement>>(new Map())
   const mapRef = useRef<OverviewMapHandle>(null)
   const theme = useTheme()
@@ -716,21 +716,42 @@ function DroneInspectionGallery({
     setSelectedItem(null)
   }
 
-  // ピンクリック → テーブル該当行ハイライト＆スクロール（ダイアログは開かない）
-  const handlePinSelect = useCallback((item: GalleryItem, _index: number) => {
-    setFocusedItemId(item.id)
-    mapRef.current?.setFocusedItemId(item.id)
-    const el = itemRefs.current.get(item.id)
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-    }
+  // DOM直接操作でギャラリーアイテムをハイライト（React再レンダリングを回避）
+  const applyGalleryHighlight = useCallback((activeId: string | null) => {
+    itemRefs.current.forEach((el, id) => {
+      if (id === activeId) {
+        el.style.boxShadow = '0 0 0 3px #1976d2'
+        el.style.transform = 'scale(1.05)'
+      } else {
+        el.style.boxShadow = 'none'
+        el.style.transform = 'none'
+      }
+    })
   }, [])
 
-  // ギャラリーアイテムホバー → マップピンをハイライトのみ（stateはギャラリー側のハイライト用）
-  const handleItemHover = useCallback((itemId: string | null) => {
-    setHoveredItemId(itemId)
-    mapRef.current?.setHoveredItemId(itemId)
-  }, [])
+  // ピンクリック → テーブル該当行ハイライト＆スクロール（ダイアログは開かない）
+  const handlePinSelect = useCallback(
+    (item: GalleryItem, _index: number) => {
+      focusedItemIdRef.current = item.id
+      mapRef.current?.setFocusedItemId(item.id)
+      applyGalleryHighlight(item.id)
+      const el = itemRefs.current.get(item.id)
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      }
+    },
+    [applyGalleryHighlight]
+  )
+
+  // ギャラリーアイテムホバー → マップピンをハイライトのみ（再レンダリングなし）
+  const handleItemHover = useCallback(
+    (itemId: string | null) => {
+      hoveredItemIdRef.current = itemId
+      mapRef.current?.setHoveredItemId(itemId)
+      applyGalleryHighlight(itemId || focusedItemIdRef.current)
+    },
+    [applyGalleryHighlight]
+  )
 
   const handleImageError = useCallback((imageId: string) => {
     setImageErrors((prev) => new Set([...prev, imageId]))
@@ -890,14 +911,6 @@ function DroneInspectionGallery({
                 overflow: 'hidden',
                 borderRadius: 1,
                 transition: 'box-shadow 0.2s, transform 0.2s',
-                boxShadow:
-                  hoveredItemId === item.id || focusedItemId === item.id
-                    ? '0 0 0 3px #1976d2'
-                    : 'none',
-                transform:
-                  hoveredItemId === item.id || focusedItemId === item.id
-                    ? 'scale(1.05)'
-                    : 'none',
                 '&:hover': { opacity: 0.85 },
               }}
             >
@@ -952,9 +965,6 @@ function DroneInspectionGallery({
                     if (el) itemRefs.current.set(item.id, el)
                   }}
                   hover
-                  selected={
-                    hoveredItemId === item.id || focusedItemId === item.id
-                  }
                   onClick={() => handleOpen(item, index)}
                   onMouseEnter={() => handleItemHover(item.id)}
                   onMouseLeave={() => handleItemHover(null)}
