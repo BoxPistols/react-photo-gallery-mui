@@ -59,7 +59,7 @@ export interface OverviewMapHandle {
   setFocusedItemId: (id: string | null) => void
 }
 
-export const OverviewMap = forwardRef<OverviewMapHandle, OverviewMapProps>(
+const OverviewMapInner = forwardRef<OverviewMapHandle, OverviewMapProps>(
   ({ items, height = 400, onPinClick }, ref) => {
     const mapContainer = useRef<HTMLDivElement>(null)
     const mapRef = useRef<MaplibreGl.Map | null>(null)
@@ -249,6 +249,8 @@ export const OverviewMap = forwardRef<OverviewMapHandle, OverviewMapProps>(
   }
 )
 
-OverviewMap.displayName = 'OverviewMap'
+OverviewMapInner.displayName = 'OverviewMap'
+
+export const OverviewMap = React.memo(OverviewMapInner)
 
 export default OverviewMap
