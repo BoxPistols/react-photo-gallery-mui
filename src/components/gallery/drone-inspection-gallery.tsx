@@ -834,7 +834,7 @@ function DroneInspectionGallery(_props: DroneInspectionGalleryProps = {}) {
         sx={{
           mb: 0.5,
           fontWeight: 600,
-          color: 'text.disabled',
+          color: 'text.secondary',
           fontSize: '0.75rem',
           letterSpacing: '0.05em',
         }}
