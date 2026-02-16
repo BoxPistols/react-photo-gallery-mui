@@ -2,13 +2,11 @@
 
 import createCache from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
-import { CssBaseline } from '@mui/material'
-import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter'
 import type { ReactNode } from 'react'
 
 import { QueryProvider } from '@/lib/query-provider'
-import { theme } from '@/lib/theme'
+import ThemeProvider from '@/lib/theme-provider'
 import './globals.css'
 
 /**
@@ -50,10 +48,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
       >
         <AppRouterCacheProvider>
           <CacheProvider value={cache}>
-            <MuiThemeProvider theme={theme}>
-              <CssBaseline />
+            <ThemeProvider>
               <QueryProvider>{children}</QueryProvider>
-            </MuiThemeProvider>
+            </ThemeProvider>
           </CacheProvider>
         </AppRouterCacheProvider>
       </body>
