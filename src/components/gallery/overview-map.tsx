@@ -180,18 +180,19 @@ const OverviewMapInner = forwardRef<OverviewMapHandle, OverviewMapProps>(
     const highlightMarker = useCallback((activeId: string | null) => {
       markersRef.current.forEach(({ el }, id) => {
         const svg = el.querySelector('svg')
+        const wrapper = el.closest('.maplibregl-marker') as HTMLElement | null
         if (id === activeId) {
           if (svg) {
-            svg.style.transform = 'scale(1.5)'
+            svg.style.transform = 'scale(1.4)'
             svg.style.filter = 'drop-shadow(0 0 4px rgba(0,0,0,0.5))'
           }
-          el.style.zIndex = '10'
+          if (wrapper) wrapper.style.zIndex = '10'
         } else {
           if (svg) {
             svg.style.transform = ''
             svg.style.filter = ''
           }
-          el.style.zIndex = '1'
+          if (wrapper) wrapper.style.zIndex = ''
         }
       })
     }, [])
